@@ -1,17 +1,35 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { createRoot } from "react-dom/client";
+import { Game } from "./components/Game";
+import { useShallow } from "zustand/react/shallow";
+import { Home } from "./pages/home";
+import { Suspense, useEffect } from "react";
+import { Physics } from "@react-three/rapier";
+import { Canvas } from "@react-three/fiber";
+import { UI } from "./components/UI";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+import "./output.css";
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+import { useGameStore } from "./store";
+
+function App() {
+	const page = useGameStore((state) => state.page);
+	const map = useGameStore((state) => state.map);
+
+	return (
+		<>
+			{page === "home" ? (
+				<Home />
+			) : (
+				<>
+					<Canvas shadows camera={{ position: [30, 10, -30], fov: 30 }}>
+						<color attach='background' args={["#f0f0f0"]} />
+						<Game map={map} />
+					</Canvas>
+					<UI map={map} />
+				</>
+			)}
+		</>
+	);
+}
+
+createRoot(document.getElementById("root")).render(<App />);
