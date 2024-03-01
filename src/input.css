@@ -21,5 +21,27 @@ code {
 }
 
 .btn {
-	@apply backdrop-blur border-none p-4 rounded-xl bg-green-300/50 text-black drop-shadow-md cursor-pointer hover:bg-green-300 transition-colors;
+	@apply flex items-center justify-center backdrop-blur border-none p-1 rounded-xl  text-black drop-shadow-md cursor-pointer transition-colors;
+}
+
+/* 
+.btn {
+	@apply flex items-center justify-center backdrop-blur border-none p-4 rounded-xl bg-green-300/50 text-black drop-shadow-md cursor-pointer hover:bg-green-300 transition-colors;
+} */
+
+.rainbowBorder {
+	@apply rounded-xl p-[6px] backdrop-blur;
+	background: conic-gradient(
+		rgba(250, 171, 153, 0.5) 0%,
+		rgba(252, 188, 93, 0.5) 16%,
+		rgba(255, 220, 94, 0.5) 32%,
+		rgba(197, 236, 172, 0.5) 48%,
+		rgba(174, 247, 255, 0.5) 64%,
+		rgba(212, 187, 252, 0.5) 80%,
+		rgba(250, 171, 153, 0.5) 100%
+	);
+}
+
+.rainbowBorder + div {
+	@apply rounded-lg p-4 h-full w-full bg-white/50 hover:bg-white/80 transition-colors;
 }

@@ -6,7 +6,7 @@ import { useGrid } from "../hooks/useGrid";
 import { EnvironmentOutside } from "./Environment";
 import { setItems } from "../store";
 
-import { useGameStore, setSelected } from "../store";
+import { useGameStore, setSelected, placeSelected } from "../store";
 
 export const Game = ({ map }) => {
 	const {
@@ -18,23 +18,23 @@ export const Game = ({ map }) => {
 	} = useGameStore((state) => state.selected);
 
 	const { size, gridDivision, items, environment, itemsBase } = map;
-
-	console.log(selectedRot, selectedItem);
+	const gameState = useGameStore((state) => state.gameState);
+	// console.log(selectedRot, selectedItem);
 
 	return (
 		<>
 			<OrbitControls
 				minDistance={0}
 				maxDistance={60}
-				minPolarAngle={0}
+				// minPolarAngle={Math.PI / 4}
+				// minAzimuthAngle={Math.PI / 2}
+				// maxAzimuthAngle={Math.PI}
+				// enableRotate={false}
 				enablePan={false}
-				maxPolarAngle={Math.PI / 2}
+				// maxPolarAngle={Math.PI / 2.5}
 				screenSpacePanning={false}
 			/>
-			<Environment preset='sunset' />
-			<ambientLight intensity={0.3} />
-			{/* <directionalLight color='white' position={[0, 0, 5]} /> */}
-			<EnvironmentOutside environment={environment} />
+
 			{items.map((item, index) => (
 				<Item
 					key={`${item.name}-${index}`}
@@ -45,20 +45,24 @@ export const Game = ({ map }) => {
 					canDrop={canDrop}
 					map={map}
 					selectedColor={selectedColor}
-					onClick={() => setSelected(index)}
+					onClick={() => {
+						if (selectedItem !== index && gameState === "inside") {
+							setSelected(index);
+						}
+						if (selectedItem === index && gameState === "inside") {
+							placeSelected();
+						}
+					}}
 				/>
 			))}
 			{itemsBase.map((item, index) => (
 				<Item key={`${item.name}-${index}`} item={item} map={map} />
 			))}
 
-			<mesh position={[size[0] / 2, 0.01, -size[1] / 2]} rotation-x={-Math.PI / 2}>
-				<planeGeometry args={map.size} />
-				{/* <meshStandardMaterial color='green' /> */}
-			</mesh>
-
-			{/* <RigidBody colliders={false} type='fixed' position-y={-0.5}></RigidBody> */}
-			<Grid position-y={0.1} infiniteGrid fadeDistance={50} fadeStrength={5} />
+			{gameState === "inside" ? (
+				<Grid position-y={0.1} infiniteGrid fadeDistance={50} fadeStrength={5} />
+			) : null}
+			<EnvironmentOutside environment={environment} />
 		</>
 	);
 };

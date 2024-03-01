@@ -1,5 +1,16 @@
 import React, { useRef } from "react";
-import { useGLTF } from "@react-three/drei";
+import {
+	useGLTF,
+	Environment,
+	GradientTexture,
+	Bounds,
+	BakeShadows,
+	Clouds,
+	Cloud,
+	useHelper,
+} from "@react-three/drei";
+import * as THREE from "three";
+import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper";
 
 const TerrainPlane = ({ color }) => {
 	const { scene } = useGLTF(`/models/terrain.glb`);
@@ -13,26 +24,84 @@ const TerrainPlane = ({ color }) => {
 
 export const EnvironmentOutside = ({ environment }) => {
 	const { name, color } = environment;
+	const isDay = false;
+
+	// const light = useRef();
+	// useHelper(light, THREE.DirectionalLightHelper, 1, "cyan");
+	// useHelper(light, RectAreaLightHelper, "red");
+
 	// const { gridToVector3 } = useGrid({ map });
 	// const colorMap = useLoader(TextureLoader, `/textures/${texture}.jpg`);
 	// const { scene } = useGLTF(`/models/${name}.glb`);
 	const terrain = TerrainPlane({ color: color });
 	return (
 		<>
+			{/* <Environment background={false} preset='forest' /> */}
+			<GradientTexture
+				attach='background'
+				stops={[0, 1]} // As many stops as you want
+				colors={["lightblue", "blue"]} // Colors need to match the number of stops
+			/>
+
+			<ambientLight intensity={isDay ? 1 : 0.1} />
+			<hemisphereLight
+				intensity={isDay ? 1 : 0.4}
+				color='#fefae0'
+				groundColor='green'
+			/>
+
+			<rectAreaLight
+				// ref={light}
+				position={[5, 12, -5]}
+				rotation-x={-Math.PI / 2}
+				intensity={0.5}
+				width={8}
+				height={8}
+				color='white'
+			/>
+			<rectAreaLight
+				// ref={light}
+				position={[12, 5, -5]}
+				rotation-y={Math.PI / 2}
+				intensity={0.5}
+				width={8}
+				height={8}
+				color='white'
+			/>
+			<rectAreaLight
+				// ref={light}
+				position={[5, 5, -12]}
+				rotation-y={-Math.PI}
+				intensity={0.5}
+				width={8}
+				height={8}
+				color='white'
+			/>
+			<Clouds position={[4, -12, -4]} material={THREE.MeshBasicMaterial}>
+				<Cloud
+					concentrate='outside'
+					segments={20}
+					bounds={[20, 1, 20]}
+					volume={20}
+					seed={2}
+					scale={2}
+					color='orange'
+				/>
+				<Cloud
+					concentrate='outside'
+					bounds={[20, 2, 20]}
+					segments={20}
+					seed={1}
+					scale={2}
+					volume={20}
+					color='hotpink'
+					fade={100}
+				/>
+			</Clouds>
+
 			{terrain}
-			{/* <primitive
-			object={scene}
-			// onClick={() => (movable ? onClick() : null)}
-			// position={gridToVector3(
-			// 	isDragging ? dragPosition || gridPosition : gridPosition
-			// )}
-			position={[
-				gridPosition[0] + 5,
-				selected ? gridPosition[1] + 0.2 : gridPosition[1],
-				gridPosition[2] - 5,
-			]}
-			rotation-y={((rotation || 0) * Math.PI) / 2}
-		/> */}
+
+			<BakeShadows />
 		</>
 	);
 };

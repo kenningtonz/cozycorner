@@ -34,20 +34,7 @@ class Map {
 				gridPosition: [-1, -0.5, 1],
 			},
 		];
-		this.items = [
-			{
-				...items.bedDoubleA,
-				gridPosition: [8, 0, -8],
-				rotation: 0,
-				color: "red",
-			},
-			{
-				...items.bedDoubleA,
-				gridPosition: [2, 0, 0],
-				rotation: 0,
-				color: "blue",
-			},
-		];
+		this.items = [];
 	}
 	static fromLocal() {
 		const localMap = localStorage.getItem("map");
@@ -118,15 +105,32 @@ export const saveMap = (map) => {
 	}));
 };
 
+export const useUIStore = create((set) => ({
+	openCategory: 0,
+	setOpenCategory: (openCategory) => set({ openCategory }),
+}));
+
+const audioState = {
+	playing: false,
+	volume: 0.5,
+	track: 0,
+};
+
 export const useGameStore = create((set) => ({
 	selected: { pos: null, rot: null, item: null, canDrop: false, color: null },
+	audio: audioState,
 	// selected: null,
 	localExists: localStorage.getItem("map") !== null,
 	page: "home",
 	map: new Map({ size: [10, 10], gridDivision: 2 }),
 	gameStates: [null, "music", "outside", "inside", "view"],
-	gameState: 0,
-
+	gameState: null,
+	setAudioVolume: (volume) =>
+		set((state) => ({ audio: { ...state.audio, volume } })),
+	setAudioTrack: (track) =>
+		set((state) => ({ audio: { ...state.audio, track } })),
+	setAudioPlaying: (playing) =>
+		set((state) => ({ audio: { ...state.audio, playing } })),
 	setGameState: (gameState) => set({ gameState }),
 	goToHome: () => set({ page: "home" }),
 }));
@@ -135,41 +139,45 @@ export const startGame = (fromLocal) => {
 	if (fromLocal) {
 		useGameStore.setState((state) => ({
 			page: "game",
+			gameState: null,
+
 			map: Map.fromLocal(),
 		}));
 		return;
 	}
 	useGameStore.setState((state) => ({
 		page: "game",
+		gameState: null,
 		map: new Map({ size: [10, 10], gridDivision: 2 }),
 	}));
+	resetSelected();
 };
 
-export const select = (index) => {
-	if (index === -1) {
-		useGameStore.setState((state) => ({
-			selected: new Selected([0, 0, 0], 0, state.map.items.length, "purple"),
-		}));
-	} else {
-		useGameStore.setState((state) => ({
-			selected: new Selected(
-				state.map.items[index].gridPosition,
-				state.map.items[index].rotation,
-				index,
-				state.map.items[index].color
-			),
-		}));
-	}
-};
+// export const select = (index) => {
+// 	if (index === -1) {
+// 		useGameStore.setState((state) => ({
+// 			selected: new Selected([0, 0, 0], 0, state.map.items.length, "purple"),
+// 		}));
+// 	} else {
+// 		useGameStore.setState((state) => ({
+// 			selected: new Selected(
+// 				state.map.items[index].gridPosition,
+// 				state.map.items[index].rotation,
+// 				index,
+// 				state.map.items[index].color
+// 			),
+// 		}));
+// 	}
+// };
 
 export const setSelected = (index) => {
 	console.log(index);
 	useGameStore.setState((state) => ({
 		selected: {
-			pos: index === -1 ? [0, 0, 0] : state.map.items[index].gridPosition,
-			rot: index === -1 ? 0 : state.map.items[index].rotation,
-			item: index === -1 ? state.map.items.length : index,
-			color: index === -1 ? null : state.map.items[index].color,
+			pos: state.map.items[index].gridPosition,
+			rot: state.map.items[index].rotation,
+			item: index,
+			color: state.map.items[index].color,
 		},
 	}));
 	if (index === -1) return;
@@ -191,7 +199,10 @@ const resetSelected = () => {
 export const spawnItem = (itemName) => {
 	console.log(itemName);
 	const item = items[itemName];
-	setSelected(-1);
+	let index;
+	unstable_batchedUpdates(() => {
+		index = useGameStore.getState().map.items.length;
+	});
 	useGameStore.setState((state) => ({
 		map: {
 			...state.map,
@@ -199,13 +210,27 @@ export const spawnItem = (itemName) => {
 				...state.map.items,
 				{
 					...item,
-					gridPosition: state.selected.pos,
-					rotation: state.selected.rot,
+					gridPosition: [0, -0.25, 0],
+					rotation: 0,
+					index: index,
 				},
 			],
 		},
 	}));
+	setSelected(index);
 	setCanDrop();
+};
+
+export const removeSelected = () => {
+	useGameStore.setState((state) => ({
+		map: {
+			...state.map,
+			items: state.map.items.filter(
+				(item, index) => index !== state.selected.item
+			),
+		},
+	}));
+	resetSelected();
 };
 
 export const moveSelected = (x, z) => {
@@ -231,12 +256,39 @@ export const moveSelected = (x, z) => {
 	setCanDrop();
 };
 
+// const getMaxX = (mapSizeX, itemSizeX) => {
+// 	return mapSizeX + itemSizeX + 1;
+// };
+// const getMaxZ = (mapSizeZ, itemSizeZ) => {
+// 	return -mapSizeZ - itemSizeZ - 1;
+// };
+
+// export const getX = (mapSizeX, itemSizeX, x) => {
+// 	return Math.min(mapSizeX + itemSizeX + 1, Math.max(0, x));
+// };
+
+// export const getZ = (mapSizeZ, itemSizeZ, z) => {
+// 	return Math.max(-mapSizeZ - itemSizeZ - 1, Math.min(0, z));
+// };
+
+// export const moveSelected = (x, z) => {
+// 	useGameStore.setState((state) => ({
+// 		selected: {
+// 			...state.selected,
+// 			pos:
+// 				state.selected.item !== null ? [x, state.selected.pos[1], z] : [0, 0, 0],
+// 		},
+// 	}));
+// 	setCanDrop();
+// };
+
 const isColliding = (items, selectedItem, selectedPos) => {
 	const item = items[selectedItem];
+	if (item.collidable === false) return true;
 	let droppable = true;
 	const width =
 		item.rotation === 1 || item.rotation === 3 ? item.size[1] : item.size[0];
-	const height =
+	const length =
 		item.rotation === 1 || item.rotation === 3 ? item.size[0] : item.size[1];
 
 	// check if item is not colliding with other items
@@ -244,11 +296,14 @@ const isColliding = (items, selectedItem, selectedPos) => {
 		if (index === selectedItem) {
 			return;
 		}
+		if (otherItem.collidable === false) {
+			return;
+		}
 		const otherWidth =
 			otherItem.rotation === 1 || otherItem.rotation === 3
 				? otherItem.size[1]
 				: otherItem.size[0];
-		const otherHeight =
+		const otherLength =
 			otherItem.rotation === 1 || otherItem.rotation === 3
 				? otherItem.size[0]
 				: otherItem.size[1];
@@ -259,8 +314,8 @@ const isColliding = (items, selectedItem, selectedPos) => {
 		if (
 			selectedPos[0] < otherItem.gridPosition[0] + otherWidth * 2 &&
 			selectedPos[0] + width * 2 > otherItem.gridPosition[0] &&
-			selectedPos[2] > otherItem.gridPosition[2] + otherHeight * -2 &&
-			selectedPos[2] + height * -2 < otherItem.gridPosition[2]
+			selectedPos[2] > otherItem.gridPosition[2] + otherLength * -2 &&
+			selectedPos[2] + length * -2 < otherItem.gridPosition[2]
 		) {
 			droppable = false;
 		}
@@ -349,6 +404,7 @@ export const placeSelected = () => {
 						...item,
 						gridPosition: state.selected.pos,
 						rotation: state.selected.rot,
+						color: state.selected.color,
 					};
 				}
 				return item;

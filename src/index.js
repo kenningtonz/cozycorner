@@ -6,6 +6,7 @@ import { Suspense, useEffect } from "react";
 import { Physics } from "@react-three/rapier";
 import { Canvas } from "@react-three/fiber";
 import { UI } from "./components/UI";
+import * as THREE from "three";
 
 import "./output.css";
 
@@ -21,8 +22,12 @@ function App() {
 				<Home />
 			) : (
 				<>
-					<Canvas shadows camera={{ position: [30, 10, -30], fov: 30 }}>
-						<color attach='background' args={["#f0f0f0"]} />
+					<Canvas
+						// gl={{ antialias: true, toneMapping: THREE.NoToneMapping }}
+
+						shadows
+						camera={{ position: [30, 10, -30], fov: 30 }}
+					>
 						<Game map={map} />
 					</Canvas>
 					<UI map={map} />
