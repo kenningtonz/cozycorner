@@ -23,8 +23,17 @@ const TerrainPlane = ({ color }) => {
 };
 
 export const EnvironmentOutside = ({ environment }) => {
-	const { name, color } = environment;
-	const isDay = false;
+	const {
+		name,
+		terrainColor,
+		skyLight,
+		groundLight,
+		skyColor,
+		skyColor2,
+		cloudColor,
+		cloudColor2,
+	} = environment;
+	const isDay = true;
 
 	// const light = useRef();
 	// useHelper(light, THREE.DirectionalLightHelper, 1, "cyan");
@@ -32,24 +41,22 @@ export const EnvironmentOutside = ({ environment }) => {
 
 	// const { gridToVector3 } = useGrid({ map });
 	// const colorMap = useLoader(TextureLoader, `/textures/${texture}.jpg`);
-	// const { scene } = useGLTF(`/models/${name}.glb`);
-	const terrain = TerrainPlane({ color: color });
+	const { scene } = useGLTF(`/models/${name}.glb`);
+
 	return (
 		<>
 			{/* <Environment background={false} preset='forest' /> */}
 			<GradientTexture
 				attach='background'
 				stops={[0, 1]} // As many stops as you want
-				colors={["lightblue", "blue"]} // Colors need to match the number of stops
+				colors={[skyColor, skyColor2]} // Colors need to match the number of stops
 			/>
-
-			<ambientLight intensity={isDay ? 1 : 0.1} />
+			<ambientLight intensity={isDay ? 0.5 : 0.1} />
 			<hemisphereLight
-				intensity={isDay ? 1 : 0.4}
-				color='#fefae0'
-				groundColor='green'
+				intensity={isDay ? 0.5 : 0.4}
+				color={skyLight}
+				groundColor={groundLight}
 			/>
-
 			<rectAreaLight
 				// ref={light}
 				position={[5, 12, -5]}
@@ -85,7 +92,7 @@ export const EnvironmentOutside = ({ environment }) => {
 					volume={20}
 					seed={2}
 					scale={2}
-					color='orange'
+					color={cloudColor}
 				/>
 				<Cloud
 					concentrate='outside'
@@ -94,13 +101,13 @@ export const EnvironmentOutside = ({ environment }) => {
 					seed={1}
 					scale={2}
 					volume={20}
-					color='hotpink'
+					color={cloudColor2}
 					fade={100}
 				/>
 			</Clouds>
+			<TerrainPlane color={terrainColor} />
 
-			{terrain}
-
+			<primitive object={scene} position={[0, -0.4, 0]} />
 			<BakeShadows />
 		</>
 	);

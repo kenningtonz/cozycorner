@@ -1,0 +1,14 @@
+{
+	"moduleResolution": "node",
+	"compilerOptions": {
+		"baseUrl": "./src",
+		"paths": {
+			"@*": ["./*"],
+			"@components/*": ["./components/*"],
+			"@icons/*": ["./components/icons/*"],
+			"@gameStore": ["./state/store.js"],
+			"@ui/*": ["./components/ui/*"]
+		}
+	},
+	"exclude": ["node_modules"]
+}

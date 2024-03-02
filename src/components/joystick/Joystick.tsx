@@ -3,7 +3,7 @@ import { JoystickShape } from "./enums/shape.enum.ts";
 import { shapeFactory } from "./shapes/shape.factory.ts";
 import { shapeBoundsFactory } from "./shapes/shape.bounds.factory.ts";
 
-import Move from "../icons/Move.jsx";
+import Move from "../icons/move.jsx";
 
 export interface IJoystickProps {
 	size?: number;

@@ -1,11 +1,7 @@
 import { useGrid } from "../hooks/useGrid";
-import tinycolor from "tinycolor2";
-
-import React, { useRef } from "react";
-import { useGLTF, Clone, PivotControls, DragControls } from "@react-three/drei";
+import ColorMaterial from "@/hooks/colourMaterial";
 import * as THREE from "three";
-
-import { moveSelected, getX, getZ } from "../store";
+import { useGLTF, Clone, PivotControls, DragControls } from "@react-three/drei";
 
 export const Item = ({
 	item,
@@ -17,65 +13,28 @@ export const Item = ({
 	selectedRot,
 	selectedColor,
 }) => {
-	const { name, gridPosition, size, rotation, color } = item;
+	const { name, position, rotation, color, axis } = item;
 	const { gridToVector3, vector3ToGrid } = useGrid(map);
 	const itemRotation = selected ? selectedRot : rotation;
 
 	const { scene } = useGLTF(`/models/${name}.glb`);
 
-	const width = itemRotation === 1 || itemRotation === 3 ? size[1] : size[0];
-	const length = itemRotation === 1 || itemRotation === 3 ? size[0] : size[1];
+	const width = item.getWidth(itemRotation);
+	const length = item.getLength(itemRotation);
 
 	//setting color
 	if (color !== undefined) {
 		const colorThree = new THREE.Color(selected ? selectedColor : color);
-		const colorThreeHex = tinycolor(colorThree.getHexString());
-
-		// console.log(colorMono);
-		// console.log(colorThreeHex.getLuminance(), colorThreeHex.getBrightness());
-		let newColor;
-		if (
-			colorThreeHex.getBrightness() < 20 ||
-			colorThreeHex.getLuminance() < 0.2
-		) {
-			newColor = colorThreeHex.brighten(20).lighten(25).toString("hex");
-		} else {
-			newColor = colorThreeHex.darken(10).desaturate(10).toString("hex");
-		}
-
-		const colorAccent = new THREE.Color(newColor);
-		// const colorAccentHex = tinycolor(colorAccent.getHexString());
-		// console.log(colorAccentHex.getLuminance(), colorAccentHex.getBrightness());
-
-		if (selected) {
-			// console.log(item);
-		}
-		scene.traverse((child) => {
-			if (child.name === `${name}_colour`) {
-				const clonedMaterialColour = child.material.clone();
-				clonedMaterialColour.color.set(colorThree);
-				child.material = clonedMaterialColour;
-			}
-			if (child.name === `${name}_colourAccent`) {
-				const clonedMaterialColourAccent = child.material.clone();
-				clonedMaterialColourAccent.color.set(colorAccent);
-				child.material = clonedMaterialColourAccent;
-			}
-			if (child.name === `${name}_base`) {
-				const clonedMaterialBase = child.material.clone();
-				clonedMaterialBase.color.set(new THREE.Color("#A16C52"));
-				child.material = clonedMaterialBase;
-			}
-		});
+		ColorMaterial(scene, colorThree, name, map.baseColor);
 	}
 
 	return (
 		<>
 			<group
-				position={gridToVector3(
-					selected ? selectedPos || gridPosition : gridPosition,
-					[width, length]
-				)}
+				position={gridToVector3(selected ? selectedPos || position : position, [
+					width,
+					length,
+				])}
 				onClick={onClick}
 			>
 				<Clone
@@ -85,7 +44,15 @@ export const Item = ({
 				/>
 				{selected && (
 					<mesh>
-						<boxGeometry args={[size[0], 0.1, size[1]]} />
+						<boxGeometry
+						// args={
+						// 	axis == "floor"
+						// 		? [size[0], 0.1, size[1]]
+						// 		: itemRotation == 1
+						// 		? [0.1, size[0], size[1]]
+						// 		: [size[1], size[0], 0.1]
+						// }
+						/>
 						<meshStandardMaterial
 							color={canDrop ? "green" : "red"}
 							transparent

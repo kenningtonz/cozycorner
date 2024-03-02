@@ -1,4 +1,4 @@
-import { startGame, useGameStore } from "../store";
+import { startGame, useGameStore } from "../state/store";
 export const Home = () => {
 	const localExists = useGameStore((state) => state.localExists);
 	return (

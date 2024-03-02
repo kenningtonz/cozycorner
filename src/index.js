@@ -7,10 +7,10 @@ import { Physics } from "@react-three/rapier";
 import { Canvas } from "@react-three/fiber";
 import { UI } from "./components/UI";
 import * as THREE from "three";
-
+import { MusicManager } from "./components/AudioManager";
 import "./output.css";
 
-import { useGameStore } from "./store";
+import { useGameStore } from "./state/store";
 
 function App() {
 	const page = useGameStore((state) => state.page);
@@ -22,6 +22,7 @@ function App() {
 				<Home />
 			) : (
 				<>
+					<MusicManager />
 					<Canvas
 						// gl={{ antialias: true, toneMapping: THREE.NoToneMapping }}
 
