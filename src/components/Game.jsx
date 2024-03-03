@@ -11,24 +11,8 @@ import { setSelected, placeSelected } from "@state/selectedStoreFunctions";
 import * as THREE from "three";
 
 export const Game = ({ map }) => {
-	const {
-		item: selectedItem,
-		rot: selectedRot,
-		pos: selectedPos,
-		canDrop,
-		color: selectedColor,
-	} = useGameStore((state) => state.selected);
-
-	const { size, gridDivision, items, environment, itemsBase } = map;
 	const gameState = useGameStore((state) => state.gameState);
 	// console.log(selectedRot, selectedItem);
-	const { scene: walls } = useGLTF("/models/walls.glb");
-	const { scene: floor } = useGLTF("/models/floor.glb");
-	const { gridToVector3 } = useGrid(map);
-
-	const colorWallsFloor = new THREE.Color(map.buildingColor);
-	ColorMaterial(walls, colorWallsFloor, "wall", map.baseColor);
-	ColorMaterial(floor, colorWallsFloor, "floor", map.baseColor);
 
 	return (
 		<>
@@ -43,22 +27,37 @@ export const Game = ({ map }) => {
 				// maxPolarAngle={Math.PI / 2.5}
 				screenSpacePanning={false}
 			/>
-			{items.map((item, index) => (
+			<House map={map} gameState={gameState} />
+			<EnvironmentOutside environment={map.environment} />
+		</>
+	);
+};
+
+const House = ({ map, gameState }) => {
+	const selected = useGameStore((state) => state.selected);
+	const { scene: walls } = useGLTF("/models/walls.glb");
+	const { scene: floor } = useGLTF("/models/floor.glb");
+	const { gridToVector3 } = useGrid(map);
+
+	const colorWallsFloor = new THREE.Color(map.buildingColor);
+	ColorMaterial(walls, colorWallsFloor, "wall", map.baseColor);
+	ColorMaterial(floor, colorWallsFloor, "floor", map.baseColor);
+
+	return (
+		<>
+			{map.items.map((item, index) => (
 				<Item
 					key={`${item.name}-${index}`}
-					item={item.item}
-					selected={selectedItem === index}
-					selectedPos={selectedPos}
-					selectedRot={selectedRot}
-					canDrop={canDrop}
+					item={item}
+					isSelected={selected.item === index}
+					selected={selected}
 					map={map}
-					selectedColor={selectedColor}
 					onClick={() => {
-						if (selectedItem !== index && gameState === "inside") {
+						if (selected.item !== index && gameState === "inside") {
 							setSelected(index);
 							console.log(item);
 						}
-						if (selectedItem === index && gameState === "inside") {
+						if (selected.item === index && gameState === "inside") {
 							placeSelected();
 						}
 					}}
@@ -66,16 +65,18 @@ export const Game = ({ map }) => {
 			))}
 			<primitive
 				object={walls}
-				position={gridToVector3([-1, -0.5, 1], [10.5, 10.5])}
+				position={gridToVector3(
+					{ x: -0.5, y: -0.5, z: 0.5 },
+					{ x: 10.5, z: 10.5, y: 10.5 }
+				)}
 			/>
 			<primitive
 				object={floor}
-				position={gridToVector3([-1, -0.5, 1], [10.5, 10.5])}
+				position={gridToVector3(
+					{ x: -0.5, y: -0.5, z: 0.5 },
+					{ x: 10.5, z: 10.5, y: 10.5 }
+				)}
 			/>
-			{gameState === "inside" ? (
-				<Grid position-y={0.1} infiniteGrid fadeDistance={50} fadeStrength={5} />
-			) : null}
-			<EnvironmentOutside environment={environment} />
 		</>
 	);
 };

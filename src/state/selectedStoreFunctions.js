@@ -1,15 +1,11 @@
 import { useGameStore } from "./store";
-import { items, Item, models } from "../data/models";
+import { Item, models } from "../data/models";
 import { unstable_batchedUpdates } from "react-dom";
 
-const isColliding = (items, selectedItem, selectedPos) => {
+const isColliding = (items, selectedItem, position) => {
 	const item = items[selectedItem];
 	if (item.collidable === false) return true;
 	let droppable = true;
-	const width =
-		item.rotation === 1 || item.rotation === 3 ? item.size[1] : item.size[0];
-	const length =
-		item.rotation === 1 || item.rotation === 3 ? item.size[0] : item.size[1];
 
 	// check if item is not colliding with other items
 	items.forEach((otherItem, index) => {
@@ -19,32 +15,71 @@ const isColliding = (items, selectedItem, selectedPos) => {
 		if (otherItem.collidable === false) {
 			return;
 		}
-		const otherWidth =
-			otherItem.rotation === 1 || otherItem.rotation === 3
-				? otherItem.size[1]
-				: otherItem.size[0];
-		const otherLength =
-			otherItem.rotation === 1 || otherItem.rotation === 3
-				? otherItem.size[0]
-				: otherItem.size[1];
-		// console.log(selectedPos[0], otherItem.gridPosition[0] + otherWidth);
-		// console.log(selectedPos[0] + width * 2, otherItem.gridPosition[0]);
-		// console.log(selectedPos[2], otherItem.gridPosition[2] + otherHeight * -2);
-		// console.log(selectedPos[2] + height * -2, otherItem.gridPosition[2]);
-		if (
-			selectedPos[0] < otherItem.gridPosition[0] + otherWidth * 2 &&
-			selectedPos[0] + width * 2 > otherItem.gridPosition[0] &&
-			selectedPos[2] > otherItem.gridPosition[2] + otherLength * -2 &&
-			selectedPos[2] + length * -2 < otherItem.gridPosition[2]
+
+		const xAxisCheck = () => {
+			return (
+				position.x < otherItem.position.x + otherItem.size.x &&
+				position.x + item.size.x > otherItem.position.x
+			);
+		};
+
+		const zAxisCheck = () => {
+			return (
+				position.z > otherItem.position.z - otherItem.size.z &&
+				position.z - item.size.z < otherItem.position.z
+			);
+		};
+
+		const yAxisCheck = () => {
+			return (
+				position.y < otherItem.position.y + otherItem.size.y &&
+				position.y + item.size.y > otherItem.position.y
+			);
+		};
+
+		//different axis
+		if (item.axis != otherItem.axis) {
+			//check all axis
+			if (yAxisCheck() && xAxisCheck() && zAxisCheck()) {
+				droppable = false;
+			}
+		} else if (
+			item.axis.x &&
+			item.axis.y &&
+			otherItem.axis.x &&
+			otherItem.axis.y
 		) {
-			droppable = false;
+			//check x and y
+			if (yAxisCheck() && xAxisCheck()) {
+				droppable = false;
+			}
+		} else if (
+			item.axis.z &&
+			item.axis.y &&
+			otherItem.axis.z &&
+			otherItem.axis.y
+		) {
+			if (yAxisCheck() && zAxisCheck()) {
+				droppable = false;
+			}
+			//check z and y
+		} else if (
+			item.axis.x &&
+			item.axis.z &&
+			otherItem.axis.x &&
+			otherItem.axis.z
+		) {
+			//check x and z
+			if (zAxisCheck() && xAxisCheck()) {
+				droppable = false;
+			}
 		}
 	});
 
 	return droppable;
 };
 
-export const setCanDrop = () => {
+const setCanDrop = () => {
 	useGameStore.setState((state) => ({
 		selected: {
 			...state.selected,
@@ -57,42 +92,6 @@ export const setCanDrop = () => {
 	}));
 };
 
-export const setSelected = (item) => {
-	useGameStore.setState((state) => ({
-		selected: new Selected(item),
-	}));
-};
-
-export const rotateSelected = (rotation) => {
-	let newRot;
-	unstable_batchedUpdates(() => {
-		const selected = useGameStore.getState().selected;
-		//wall axis can only be 2 or 3
-		if (selected.axis === "floor") {
-			newRot = selected.rot + rotation;
-			if (newRot < 0) {
-				newRot = 3;
-			}
-			if (newRot > 3) {
-				newRot = 0;
-			}
-		} else {
-			if (selected.rot == 1) {
-				newRot = 2;
-			} else {
-				newRot = 1;
-			}
-		}
-	});
-
-	useGameStore.setState((state) => ({
-		selected: {
-			...state.selected,
-			rot: state.selected.item !== null ? newRot : 0,
-		},
-	}));
-};
-
 export const colorSelected = (color) => {
 	useGameStore.setState((state) => ({
 		selected: {
@@ -100,6 +99,107 @@ export const colorSelected = (color) => {
 			color: color,
 		},
 	}));
+};
+
+export const rotateSelected = (rotationChange) => {
+	//wall axis can only be 1 or 2
+	let newRot;
+	let newPos;
+	let newAxis;
+
+	unstable_batchedUpdates(() => {
+		const selected = useGameStore.getState().selected;
+		newRot = selected.rot;
+		newAxis = selected.axis;
+		newPos = selected.pos;
+	});
+	console.log(newRot);
+	if (newAxis.onFloor()) {
+		newRot = newRot + rotationChange;
+		if (newRot < 0) {
+			newRot = 3;
+		}
+		if (newRot > 3) {
+			newRot = 0;
+		}
+	} else {
+		if (newRot == 2) {
+			newRot = 1;
+			newAxis.x = false;
+			newAxis.z = true;
+			newPos = { x: 0, y: newPos.y, z: -newPos.x };
+		} else {
+			newRot = 2;
+			newAxis.z = false;
+			newAxis.x = true;
+			newPos = { x: -newPos.z, y: newPos.y, z: 0 };
+		}
+	}
+	console.log(newAxis);
+	useGameStore.setState((state) => ({
+		selected: {
+			...state.selected,
+			pos: newPos,
+			rot: newRot,
+			axis: newAxis,
+		},
+	}));
+	setCanDrop();
+};
+
+export const moveSelected = (leftRight, upDown) => {
+	let selected;
+	let mapSize;
+	let itemSize;
+	let mapDivisions;
+	unstable_batchedUpdates(() => {
+		selected = useGameStore.getState().selected;
+		mapSize = useGameStore.getState().map.size;
+		mapDivisions = useGameStore.getState().map.gridDivision;
+		const item = useGameStore.getState().map.items[selected.item];
+		itemSize = item.getSize(selected.rot);
+		// console.log(itemSize);
+	});
+
+	const moveXAxis = Math.min(
+		mapSize[0] - itemSize.x,
+		Math.max(0.25, selected.pos.x + leftRight)
+	);
+
+	const moveYAxis = Math.min(
+		mapSize[1] - itemSize.y - 1,
+		Math.max(0.5, selected.pos.y + upDown)
+	);
+
+	const moveZAxis = Math.max(
+		-mapSize[1] + itemSize.z,
+		Math.min(-0.25, selected.pos.z + leftRight)
+	);
+
+	const moveZAxisFloor = Math.max(
+		-mapSize[1] + itemSize.z,
+		Math.min(-0.25, selected.pos.z + upDown)
+	);
+
+	let newPos;
+	if (selected.axis.onFloor()) {
+		newPos = { x: moveXAxis, y: selected.pos.y, z: moveZAxisFloor };
+	} else if (selected.axis.x && selected.axis.y) {
+		newPos = { x: moveXAxis, y: moveYAxis, z: 0 };
+	} else if (selected.axis.z && selected.axis.y) {
+		newPos = { x: 0, y: moveYAxis, z: moveZAxis };
+	} else {
+		newPos = { x: 0, y: 0, z: 0 };
+	}
+	// console.log(newPos);
+	selected.pos = newPos;
+	useGameStore.setState((state) => ({
+		selected: {
+			...state.selected,
+			pos: newPos,
+		},
+	}));
+	setCanDrop();
 };
 
 export const placeSelected = () => {
@@ -116,17 +216,19 @@ export const placeSelected = () => {
 			...state.map,
 			items: state.map.items.map((item, index) => {
 				if (index === state.selected.item) {
-					return {
-						...item,
-						gridPosition: state.selected.pos,
-						rotation: state.selected.rot,
-						color: state.selected.color,
-					};
+					console.log(state.selected);
+					item.position = state.selected.pos;
+					item.rotation = state.selected.rot;
+					item.color = state.selected.color;
+					item.axis = state.selected.axis;
 				}
 				return item;
 			}),
 		},
 	}));
+	unstable_batchedUpdates(() => {
+		console.log(useGameStore.getState().map.items);
+	});
 	resetSelected();
 };
 
@@ -152,16 +254,14 @@ export const spawnItem = (itemName) => {
 	useGameStore.setState((state) => ({
 		map: {
 			...state.map,
-			items: [
-				...state.map.items,
-				{
-					item,
-				},
-			],
+			items: [...state.map.items, item],
 		},
 	}));
-	setSelected(item);
-	// setCanDrop();
+	unstable_batchedUpdates(() => {
+		console.log(useGameStore.getState().map.items);
+	});
+	setSelected(index);
+	setCanDrop();
 };
 
 export const removeSelected = () => {
@@ -176,146 +276,34 @@ export const removeSelected = () => {
 	resetSelected();
 };
 
-export const moveSelected = (x, z) => {
-	let newX;
-	let newZ;
-	let newY;
-	unstable_batchedUpdates(() => {
-		const mapSize = useGameStore.getState().map.size;
-		const item =
-			useGameStore.getState().map.items[useGameStore.getState().selected.item];
-		const selected = useGameStore.getState().selected;
-		console.log(selected.rot);
-		if (selected.axis === "floor") {
-			newX = Math.min(
-				mapSize[0] + item.size[0] + 1,
-				Math.max(0, selected.pos[0] + x)
-			);
-			newZ = Math.max(
-				-mapSize[1] - item.size[1] - 1,
-				Math.min(0, selected.pos[2] + z)
-			);
-			newY = selected.pos[1];
-		} else if (selected.axis === "wall" && selected.rot === 2) {
-			newX = Math.min(
-				mapSize[0] + item.size[0] + 1,
-				Math.max(0, selected.pos[0] + x)
-			);
-			newZ = 0;
-			newY = Math.max(
-				-mapSize[1] - item.size[1] - 1,
-				Math.min(0, selected.pos[1] + z)
-			);
-		} else {
-			newX = 0;
-			newZ = Math.max(
-				-mapSize[1] - item.size[1] - 1,
-				Math.min(0, selected.pos[2] + z)
-			);
-			newY = Math.max(
-				-mapSize[0] - item.size[0] - 1,
-				Math.min(0, selected.pos[1] + x)
-			);
-		}
-	});
-
-	useGameStore.setState((state) => ({
-		selected: {
-			...state.selected,
-			pos: state.selected.item !== null ? [newX, newY, newZ] : [0, 0, 0],
-		},
-	}));
-	setCanDrop();
-};
-
 export const resetSelected = () => {
-	useGameStore.setState(() => ({
+	useGameStore.setState((state) => ({
 		selected: {
 			pos: null,
 			rot: null,
+			color: null,
 			item: null,
 			canDrop: false,
-			color: null,
 			axis: null,
 		},
 	}));
 };
 
-class Selected {
-	constructor(item) {
-		this.pos = item.position;
-		this.rot = item.rotation;
-		this.item = item.index;
-		console.log(this.item);
-		this.color = item.color;
-		this.canDrop = true;
-	}
+export const setSelected = (index) => {
+	let item;
+	unstable_batchedUpdates(() => {
+		item = useGameStore.getState().map.items[index];
+	});
 
-	// rotateSelected = (rotation) => {
-	// 	const currentRot = this.rot;
-	// 	let newRot = currentRot + rotation;
-	// 	if (newRot < 0) {
-	// 		newRot = 3;
-	// 	}
-	// 	if (newRot > 3) {
-	// 		newRot = 0;
-	// 	}
-	// 	this.setSelected();
-	// };
-
-	// reset = () => {
-	// 	this.pos = null;
-	// 	this.rot = null;
-	// 	this.item = null;
-	// 	this.canDrop = false;
-	// 	this.color = null;
-	// };
-
-	// updateCanDrop() {
-	// 	const items = useGameStore.getState().map.items;
-	// 	const item = items[this.item];
-	// 	const selectedItem = this.item;
-	// 	const selectedPos = this.pos;
-	// 	if (item.collidable === false) return true;
-	// 	let droppable = true;
-
-	// 	// check if item is not colliding with other items
-	// 	items.forEach((otherItem, index) => {
-	// 		if (index === selectedItem) {
-	// 			return;
-	// 		}
-	// 		if (otherItem.collidable === false) {
-	// 			return;
-	// 		}
-	// 		const otherWidth =
-	// 			otherItem.rotation === 1 || otherItem.rotation === 3
-	// 				? otherItem.size[1]
-	// 				: otherItem.size[0];
-	// 		const otherLength =
-	// 			otherItem.rotation === 1 || otherItem.rotation === 3
-	// 				? otherItem.size[0]
-	// 				: otherItem.size[1];
-	// 		// console.log(selectedPos[0], otherItem.gridPosition[0] + otherWidth);
-	// 		// console.log(selectedPos[0] + width * 2, otherItem.gridPosition[0]);
-	// 		// console.log(selectedPos[2], otherItem.gridPosition[2] + otherHeight * -2);
-	// 		// console.log(selectedPos[2] + height * -2, otherItem.gridPosition[2]);
-	// 		if (
-	// 			selectedPos[0] < otherItem.gridPosition[0] + otherItem.getWidth * 2 &&
-	// 			selectedPos[0] + width * 2 > otherItem.gridPosition[0] &&
-	// 			selectedPos[2] > otherItem.gridPosition[2] + otherLength * -2 &&
-	// 			selectedPos[2] + length * -2 < otherItem.gridPosition[2]
-	// 		) {
-	// 			droppable = false;
-	// 		}
-	// 	});
-
-	// 	return droppable;
-
-	// }
-
-	// setSelected() {
-	// 	useGameStore.setState((state) => ({
-	// 		selected: this,
-	// 	}));
-	// }
-}
+	useGameStore.setState((state) => ({
+		selected: {
+			canDrop: true,
+			pos: item.position,
+			rot: item.rotation,
+			item: index,
+			color: item.color,
+			axis: item.axis,
+		},
+	}));
+	setCanDrop();
+};

@@ -1,60 +1,65 @@
 import { useGrid } from "../hooks/useGrid";
+import { useRef } from "react";
 import ColorMaterial from "@/hooks/colourMaterial";
 import * as THREE from "three";
-import { useGLTF, Clone, PivotControls, DragControls } from "@react-three/drei";
+import {
+	useGLTF,
+	Clone,
+	PivotControls,
+	DragControls,
+	useHelper,
+} from "@react-three/drei";
 
-export const Item = ({
-	item,
-	onClick,
-	selectedPos,
-	map,
-	selected,
-	canDrop,
-	selectedRot,
-	selectedColor,
-}) => {
+export const Item = ({ item, onClick, map, isSelected, selected }) => {
 	const { name, position, rotation, color, axis } = item;
 	const { gridToVector3, vector3ToGrid } = useGrid(map);
-	const itemRotation = selected ? selectedRot : rotation;
-
+	const itemRotation = isSelected ? selected.rot : rotation;
 	const { scene } = useGLTF(`/models/${name}.glb`);
 
-	const width = item.getWidth(itemRotation);
-	const length = item.getLength(itemRotation);
-
+	const size = item.getSize(itemRotation);
+	const box = useRef();
+	useHelper(box, THREE.BoxHelper, "cyan");
 	//setting color
 	if (color !== undefined) {
-		const colorThree = new THREE.Color(selected ? selectedColor : color);
-		ColorMaterial(scene, colorThree, name, map.baseColor);
+		ColorMaterial(
+			scene,
+			isSelected ? selected.color : color,
+			name,
+			map.baseColor
+		);
 	}
+	const hoverY = isSelected && axis.onFloor() ? 0.1 : 0;
+	const hoverZ = isSelected && axis.x && axis.y ? -0.1 : 0;
+	const hoverX = isSelected && axis.z && axis.y ? 0.1 : 0;
 
 	return (
 		<>
 			<group
-				position={gridToVector3(selected ? selectedPos || position : position, [
-					width,
-					length,
-				])}
+				position={gridToVector3(
+					isSelected ? selected.pos || position : position,
+					size
+				)}
+				ref={box}
 				onClick={onClick}
 			>
 				<Clone
 					object={scene}
-					position-y={selected ? 0.1 : 0}
+					position={[hoverX, hoverY, hoverZ]}
 					rotation-y={((itemRotation || 0) * Math.PI) / 2}
 				/>
-				{selected && (
+				{isSelected && (
 					<mesh>
 						<boxGeometry
-						// args={
-						// 	axis == "floor"
-						// 		? [size[0], 0.1, size[1]]
-						// 		: itemRotation == 1
-						// 		? [0.1, size[0], size[1]]
-						// 		: [size[1], size[0], 0.1]
-						// }
+							args={
+								axis.onFloor()
+									? [size.x, 0.1, size.z]
+									: axis.x && axis.y
+									? [size.x, size.y, 0.1]
+									: [0.1, size.y, size.z]
+							}
 						/>
 						<meshStandardMaterial
-							color={canDrop ? "green" : "red"}
+							color={selected.canDrop ? "green" : "red"}
 							transparent
 							opacity={0.5}
 						/>
@@ -64,29 +69,3 @@ export const Item = ({
 		</>
 	);
 };
-
-/* <DragControls
-					// axisLock='x'
-					dragLimits={[
-						[0, 0],
-						[limits.x, limits.z],
-					]}
-					// autoTransform={false}
-					onDrag={(l, dl, w, dw) => {
-						// Extract the position and rotation
-						const position = new THREE.Vector3();
-						const rotation = new THREE.Quaternion();
-						w.decompose(position, rotation, new THREE.Vector3());
-						// const pos = new THREE.Vector3();
-						// console.log(pos.setFromMatrixPosition(e));
-						// console.log(vector3ToGrid(pos));
-						const pos = vector3ToGrid(position);
-						console.log(-map.size[1] - size[1] - 1);
-						console.log(pos);
-
-						// moveSelected(
-						// 	getX(map.size[0], size[0], pos[0]),
-						// 	getZ(map.size[1], size[1], pos[2])
-						// );
-					}}
-				> */

@@ -3,7 +3,7 @@ import { JoystickShape } from "./enums/shape.enum.ts";
 import { shapeFactory } from "./shapes/shape.factory.ts";
 import { shapeBoundsFactory } from "./shapes/shape.bounds.factory.ts";
 
-import Move from "../icons/move.jsx";
+import Icon from "@components/Icon";
 
 export interface IJoystickProps {
 	size?: number;
@@ -463,7 +463,7 @@ class Joystick extends React.Component<IJoystickProps, IJoystickState> {
 					} ${this.props.disabled ? "joystick-disabled" : ""}`}
 					style={stickStyle}
 				>
-					<Move color='white' size={30} />
+					<Icon name={"Move"} color='white' size={30} />
 				</button>
 			</div>
 		);

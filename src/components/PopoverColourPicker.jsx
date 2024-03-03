@@ -5,9 +5,9 @@ import { HexColorPicker } from "react-colorful";
 import tinycolor from "tinycolor2";
 import useClickOutside from "../hooks/ClickOutside";
 
-import ColorPalette from "./icons/colorPalette";
+import Icon from "./Icon";
 
-export const PopoverPicker = ({ color, onChange }) => {
+export const PopoverPicker = ({ color, onChange, iconName }) => {
 	const popover = useRef();
 	const [isOpen, toggle] = useState(false);
 
@@ -22,12 +22,12 @@ export const PopoverPicker = ({ color, onChange }) => {
 				style={{ backgroundColor: color }}
 				onClick={() => toggle(true)}
 			>
-				<ColorPalette color={iconColor} size={26} />
+				<Icon name={iconName} color={iconColor} size={26} />
 			</div>
 
 			{isOpen && (
 				<div
-					className='absolute left-[50px] rounded-lg top-[-180px] border-4 border-white bg-white shadow-md '
+					className='absolute left-[-80px] rounded-lg top-[-210px] border-4 border-white bg-white shadow-md '
 					ref={popover}
 				>
 					<HexColorPicker color={color} onChange={onChange} />

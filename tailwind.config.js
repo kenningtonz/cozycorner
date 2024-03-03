@@ -1,9 +1,39 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
 	content: ["./src/**/*.{js,jsx,ts,tsx}"],
+	safelist: ["bg-beach", "bg-beach-200", "bg-beach-800", "bg-desert"],
 	theme: {
 		extend: {
+			boxShadow: {
+				neo: "20px 20px 50px -20px -20px 50px ",
+			},
 			colors: {
+				desert: {
+					50: "#f9f5f1",
+					100: "#efe1d6",
+					200: "#ddc1aa",
+					300: "#cc9e7d",
+					default: "#be815c",
+					500: "#b4694c",
+					600: "#9f5240",
+					700: "#853f38",
+					800: "#6d3533",
+					900: "#5b2d2c",
+					950: "#331615",
+				},
+				beach: {
+					50: "#f0fbfb",
+					100: "#d9f4f4",
+					200: "#b7e8ea",
+					300: "#86d7da",
+					default: "#5fc4c9",
+					500: "#31a1a9",
+					600: "#2c838e",
+					700: "#296a75",
+					800: "#295861",
+					900: "#264b53",
+					950: "#153137",
+				},
 				mallard: {
 					50: "#f5faeb",
 					100: "#e9f3d4",

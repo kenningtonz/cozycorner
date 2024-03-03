@@ -1,7 +1,7 @@
 import { create } from "zustand";
-import { resetSelected } from "@state/selectedStoreFunctions";
 import { environments } from "@data/environments";
 import { unstable_batchedUpdates } from "react-dom";
+import { resetSelected } from "./selectedStoreFunctions";
 
 class Map {
 	constructor({ size, gridDivision }) {
@@ -33,12 +33,18 @@ export const saveMap = (map) => {
 };
 
 export const useGameStore = create((set) => ({
-	selected: { pos: null, rot: null, item: null, canDrop: false, color: null },
+	selected: {
+		pos: null,
+		rot: null,
+		color: null,
+		item: null,
+		canDrop: false,
+		axis: null,
+	},
 	audio: { playing: false, volume: 0.5, track: 0, musicRef: null },
 	// selected: null,
 	localExists: localStorage.getItem("map") !== null,
 	page: "home",
-
 	setBaseColor: (color) =>
 		set((state) => ({ map: { ...state.map, baseColor: color } })),
 	setBuildingColor: (color) =>
@@ -56,7 +62,6 @@ export const startGame = (fromLocal) => {
 		useGameStore.setState((state) => ({
 			page: "game",
 			gameState: null,
-
 			map: Map.fromLocal(),
 		}));
 		return;

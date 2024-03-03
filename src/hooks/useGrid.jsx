@@ -15,11 +15,11 @@ export const useGrid = (map) => {
 		// const minX = 0 + size[0];
 		// const minZ = 0 + size[1];
 
-		console.log(gridPosition, size);
+		// console.log(gridPosition, size);
 		return new THREE.Vector3(
-			size[0] / map.gridDivision + gridPosition[0] / map.gridDivision,
-			gridPosition[1],
-			-size[1] / map.gridDivision + gridPosition[2] / map.gridDivision
+			size.x / map.gridDivision + gridPosition.x,
+			gridPosition.y,
+			-size.z / map.gridDivision + gridPosition.z
 		);
 	};
 
