@@ -180,7 +180,7 @@ export class Item extends Model {
 		console.log(this.axis);
 		this.position = this.axis.onFloor()
 			? { x: 5, y: -0.25, z: -5 }
-			: { x: 5, y: 5, z: 0 };
+			: { x: 5, y: 5, z: 0.25 };
 	}
 
 	placeItem(position, rotation, color) {
@@ -279,7 +279,23 @@ const Models = {
 		"rugRectangleStripes",
 		{ x: 3, z: 2, y: 0 },
 		Categories.rugs,
-		"#87BEE9",
+		"#DFB76B",
+		new MovableAxis(true, false, true),
+		false
+	),
+	rugRectangle: new Model(
+		"rugRectangle",
+		{ x: 3, z: 2, y: 0 },
+		Categories.rugs,
+		"#DFB76B",
+		new MovableAxis(true, false, true),
+		false
+	),
+	rugOval: new Model(
+		"rugOval",
+		{ x: 3, z: 2, y: 0 },
+		Categories.rugs,
+		"#DFB76B",
 		new MovableAxis(true, false, true),
 		false
 	),
@@ -300,6 +316,27 @@ const Models = {
 	shelfBLarge: new Model(
 		"shelfBLarge",
 		{ x: 2, z: 0.5, y: 0.5 },
+		Categories.tables,
+		"#CEA879",
+		new MovableAxis(true, true, false)
+	),
+	shelfALarge: new Model(
+		"shelfALarge",
+		{ x: 2, z: 0.5, y: 0.5 },
+		Categories.tables,
+		"#CEA879",
+		new MovableAxis(true, true, false)
+	),
+	shelfBSmall: new Model(
+		"shelfBSmall",
+		{ x: 1, z: 0.5, y: 0.5 },
+		Categories.tables,
+		"#CEA879",
+		new MovableAxis(true, true, false)
+	),
+	shelfASmall: new Model(
+		"shelfASmall",
+		{ x: 1, z: 0.5, y: 0.5 },
 		Categories.tables,
 		"#CEA879",
 		new MovableAxis(true, true, false)

@@ -1,104 +1,184 @@
 import { useGameStore, saveMap } from "@gameStore";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+	faMusic,
+	faFloppyDisk,
+	faHouse,
+	faEarthAmericas,
+	faDeleteLeft,
+	faVolumeXmark,
+	faEye,
+} from "@fortawesome/free-solid-svg-icons";
 
 import EnvironmentUI from "@ui/EnvironmentUI";
 import InsideUI from "@ui/InsideUI";
 import MusicUI from "@ui/MusicUI";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-
+import PopUp from "./PopUp";
 import useSound from "use-sound";
 
-import Icon from "@components/Icon";
-
 export const UI = ({ map }) => {
-	const [confirmationSound] = useSound("/soundEffects/confirmation.mp3");
-	const [clickSound] = useSound("/soundEffects/click.mp3", { volume: 0.5 });
-	const [questionSound] = useSound("/soundEffects/question.mp3");
+	const [soundMuted, setSoundMuted] = useState(false);
+	const [confirmationSound] = useSound("/soundEffects/confirmation.mp3", {
+		volume: soundMuted ? 0 : 0.5,
+	});
+	const [clickSound] = useSound("/soundEffects/click.mp3", {
+		volume: soundMuted ? 0 : 0.5,
+	});
+	const [questionSound] = useSound("/soundEffects/question.mp3", {
+		volume: soundMuted ? 0 : 0.5,
+	});
+	const [changeMusic] = useSound("/soundEffects/changeMusic.mp3", {
+		volume: soundMuted ? 0 : 0.5,
+	});
 	const goToHome = useGameStore((state) => state.goToHome);
 	const gameState = useGameStore((state) => state.gameState);
 	const setGameState = useGameStore((state) => state.setGameState);
+
+	const [popUp, setPopUp] = useState(false);
 
 	//hide ui button
 	//save button
 	//gamestates
 	//environment
 	//music
-	//wallpaper
+
 	//floors
 	console.log(gameState);
 	return (
 		<main className='absolute top-0 inset-4 flex flex-col pointer-events-none justify-between items-center overflow-hidden'>
-			<section className=' p-4 pointer-events-auto self-start justify-self-start w-full'>
-				<span className='flex w-full justify-between '>
-					<ButtonToolTip
+			<section
+				className={` p-4 ${
+					popUp ? `pointer-events-non` : `pointer-events-auto`
+				} self-start justify-self-start w-full`}
+			>
+				<div className=' flex w-full justify-between '>
+					{/* <ButtonToolTip
 						text={<Icon name={"Back"} />}
-						onClick={goToHome}
+						onClick={() => setPopUp(true)}
 						sound={questionSound}
 						className='red'
 						toolTipText='Back to Home'
-					/>
-					<div className='flex  gap-2'>
+					/> */}
+					<motion.button
+						onClick={() => {
+							setPopUp(true);
+							questionSound();
+						}}
+						// whileHover={{ scale: 1.05 }}
+						whileTap={{ scale: 0.95 }}
+						className={`iconBtn red relative`}
+					>
+						<FontAwesomeIcon size='xl' icon={faDeleteLeft} />
+					</motion.button>
+
+					<div className='rainbowBorder '>
+						<div className='flex  rainbowInner p-1 gap-2'>
+							<button
+								onClick={() => {
+									clickSound();
+									gameState != "music" ? setGameState("music") : setGameState(null);
+								}}
+								className='uiBtn'
+								data-active={gameState == "music"}
+							>
+								<FontAwesomeIcon size='2xl' icon={faMusic} />
+								{/* <Icon name={"Music"} size={32} /> */}
+								<p className='text-sm'>Music</p>
+							</button>
+							<button
+								onClick={() => {
+									clickSound();
+									gameState != "outside" ? setGameState("outside") : setGameState(null);
+								}}
+								className='uiBtn'
+								data-active={gameState == "outside"}
+							>
+								<FontAwesomeIcon size='2xl' icon={faEarthAmericas} />
+								<p className='text-sm'>Outside</p>
+							</button>
+							<button
+								onClick={() => {
+									clickSound();
+									gameState != "inside" ? setGameState("inside") : setGameState(null);
+								}}
+								className='uiBtn'
+								data-active={gameState == "inside"}
+							>
+								<FontAwesomeIcon size='2xl' icon={faHouse} />
+								<p className='text-sm'>Inside</p>
+							</button>
+							<button
+								onClick={() => {
+									clickSound();
+									gameState != "view" ? setGameState("view") : setGameState(null);
+								}}
+								className='uiBtn'
+								data-active={gameState == "view"}
+							>
+								<FontAwesomeIcon size='2xl' icon={faEye} />
+								<p className='text-sm'>View</p>
+							</button>
+						</div>
+					</div>
+					<motion.button
+						onClick={() => {
+							confirmationSound();
+						}}
+						// whileHover={{ scale: 1.05 }}
+						whileTap={{ scale: 0.95 }}
+						className={`iconBtn green relative`}
+					>
+						<FontAwesomeIcon size='xl' icon={faFloppyDisk} />
+					</motion.button>
+				</div>
+				<motion.button
+					onClick={() => {
+						setSoundMuted(!soundMuted);
+						clickSound();
+					}}
+					whileTap={{ scale: 0.95 }}
+					className={`iconBtn relative cursor-pointer pointer-events-auto`}
+				>
+					<FontAwesomeIcon size='xl' icon={faVolumeXmark} />
+				</motion.button>
+			</section>
+			<PopUp isOpen={popUp} setIsOpen={setPopUp}>
+				<>
+					<p>Are you sure you want to go back to the home screen?</p>
+					<p>This will reset your corner.</p>
+					<div className='flex gap-4'>
 						<button
 							onClick={() => {
-								clickSound();
-								gameState != "music" ? setGameState("music") : setGameState(null);
+								goToHome();
+								setPopUp(false);
 							}}
 							className='uiBtn'
-							data-active={gameState == "music"}
 						>
-							<Icon name={"Music"} size={32} />
-							<p className='text-sm'>Music</p>
+							Yes
 						</button>
 						<button
 							onClick={() => {
-								clickSound();
-								gameState != "outside" ? setGameState("outside") : setGameState(null);
+								setPopUp(false);
 							}}
 							className='uiBtn'
-							data-active={gameState == "outside"}
 						>
-							<Icon name={"House"} size={32} />
-							<p className='text-sm'>Outside</p>
-						</button>
-						<button
-							onClick={() => {
-								clickSound();
-								gameState != "inside" ? setGameState("inside") : setGameState(null);
-							}}
-							className='uiBtn'
-							data-active={gameState == "inside"}
-						>
-							Inside
-						</button>
-						<button
-							onClick={() => {
-								clickSound();
-								gameState != "view" ? setGameState("view") : setGameState(null);
-							}}
-							className='uiBtn'
-							data-active={gameState == "view"}
-						>
-							View
+							No
 						</button>
 					</div>
-					<ButtonToolTip
-						text={<Icon name={"Save"} />}
-						onClick={() => {
-							saveMap(map);
-						}}
-						sound={confirmationSound}
-						className='green'
-						toolTipText='Save Corner'
-					/>
-				</span>
-			</section>
-
-			<section className='flex items-center justify-center self-end justify-self-end w-full opacity-60 hover:opacity-100 transition'>
-				<AnimatePresence>
-					{gameState === "inside" ? <InsideUI /> : null}
-					{gameState === "music" ? <MusicUI /> : null}
-					{gameState === "outside" ? <EnvironmentUI /> : null}
-				</AnimatePresence>
+				</>
+			</PopUp>
+			<section
+				className={`flex items-center justify-center self-end justify-self-end w-full  transition ${
+					popUp ? `pointer-events-non` : `pointer-events-auto`
+				} `}
+			>
+				{/* <AnimatePresence> */}
+				{gameState === "inside" ? <InsideUI /> : null}
+				{gameState === "music" ? <MusicUI changeMusic={changeMusic} /> : null}
+				{gameState === "outside" ? <EnvironmentUI /> : null}
+				{/* </AnimatePresence> */}
 			</section>
 		</main>
 	);

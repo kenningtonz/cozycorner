@@ -5,22 +5,24 @@ import {
 	setAudioVolume,
 	setAudioTrack,
 } from "@state/audioStoreFunctions";
-import Select from "@components/Select";
 
-import Icon from "@components/Icon";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+	faVolumeHigh,
+	faVolumeOff,
+	faPause,
+	faPlay,
+	faForwardStep,
+	faBackwardStep,
+} from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
-import Carousel from "@components/Carousel";
 
-import useSound from "use-sound";
-
-const MusicUI = () => {
-	const [changeMusic] = useSound("/soundEffects/changeMusic.mp3", {
-		volume: 0.5,
-	});
+const MusicUI = ({ changeMusic }) => {
+	// console.log(sounds);
 	const { track, volume, playing } = useGameStore((state) => state.audio);
 	const tracks = Object.values(MusicTracks);
 
-	console.log(tracks);
+	console.log("music");
 	function handleClick(change) {
 		if (track + change < 0) {
 			setAudioTrack(tracks.length - 1);
@@ -30,16 +32,15 @@ const MusicUI = () => {
 			setAudioTrack(track + change);
 		}
 	}
-
 	return (
 		<motion.section
 			initial={{ opacity: 0, y: 100 }}
 			key={"envUI"}
 			animate={{ opacity: 1, y: 0 }}
 			exit={{ y: 100, opacity: 0 }}
-			className='rainbowBorder pointer-events-auto '
+			className='rainbowBorder'
 		>
-			<div className=' rainbowInner flex flex-col items-center gap-4'>
+			<div className=' rainbowInner flex flex-col items-center gap-4 p-4'>
 				{/* <Carousel options={Object.values(MusicTracks)} onClick={setAudioTrack} /> */}
 				{/* <Select
 					options={Object.values(MusicTracks)}
@@ -58,7 +59,7 @@ const MusicUI = () => {
 							changeMusic();
 						}}
 					>
-						<Icon name={"SkipBackward"} />
+						<FontAwesomeIcon icon={faBackwardStep} size={"xl"} />
 					</motion.button>
 					<motion.button
 						whileHover={{ scale: 1.05 }}
@@ -68,9 +69,9 @@ const MusicUI = () => {
 						data-playing={`${playing}`}
 					>
 						{playing ? (
-							<Icon name={"Pause"} size={32} />
+							<FontAwesomeIcon icon={faPause} size={"2xl"} />
 						) : (
-							<Icon name={"Play"} size={32} />
+							<FontAwesomeIcon icon={faPlay} size={"2xl"} />
 						)}
 					</motion.button>
 					<motion.button
@@ -81,12 +82,12 @@ const MusicUI = () => {
 						className='transition-colors'
 						whileHover={{ color: "red" }}
 					>
-						<Icon name={"SkipForward"} color={""} />
+						<FontAwesomeIcon icon={faForwardStep} size={"xl"} />
 					</motion.button>
 				</div>
 
 				<div className='min-w-[200px]  rounded-lg flex items-center gap-2'>
-					<Icon name={"VolumeDown"} />
+					<FontAwesomeIcon icon={faVolumeOff} />
 
 					<input
 						id='volume-range'
@@ -97,7 +98,7 @@ const MusicUI = () => {
 						value={volume * 100}
 						className='w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700'
 					/>
-					<Icon name={"VolumeUp"} />
+					<FontAwesomeIcon icon={faVolumeHigh} />
 				</div>
 			</div>
 		</motion.section>

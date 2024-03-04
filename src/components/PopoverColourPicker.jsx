@@ -4,10 +4,9 @@ import React, { useCallback, useRef, useState } from "react";
 import { HexColorPicker } from "react-colorful";
 import tinycolor from "tinycolor2";
 import useClickOutside from "../hooks/ClickOutside";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import Icon from "./Icon";
-
-export const PopoverPicker = ({ color, onChange, iconName }) => {
+export const PopoverPicker = ({ color, onChange, icon }) => {
 	const popover = useRef();
 	const [isOpen, toggle] = useState(false);
 
@@ -22,7 +21,7 @@ export const PopoverPicker = ({ color, onChange, iconName }) => {
 				style={{ backgroundColor: color }}
 				onClick={() => toggle(true)}
 			>
-				<Icon name={iconName} color={iconColor} size={26} />
+				<FontAwesomeIcon icon={icon} color={iconColor} />
 			</div>
 
 			{isOpen && (

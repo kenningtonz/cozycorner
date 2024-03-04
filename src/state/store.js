@@ -8,9 +8,12 @@ class Map {
 		this.size = size;
 		this.gridDivision = gridDivision;
 		this.environment = environments[0];
+		this.floorColor = "#cdaa7d";
 		this.baseColor = "#A16C52";
+
 		this.buildingColor = "#DBF760";
 		this.items = [];
+		this.isDay = true;
 	}
 	static fromLocal() {
 		const localMap = localStorage.getItem("map");
@@ -49,10 +52,13 @@ export const useGameStore = create((set) => ({
 		set((state) => ({ map: { ...state.map, baseColor: color } })),
 	setBuildingColor: (color) =>
 		set((state) => ({ map: { ...state.map, buildingColor: color } })),
+	setFloorColor: (color) =>
+		set((state) => ({ map: { ...state.map, floorColor: color } })),
 	map: new Map({ size: [10, 10], gridDivision: 2 }),
-	gameStates: [null, "music", "outside", "inside", "view"],
 	gameState: null,
-
+	setEnvironment: (index) =>
+		set((state) => ({ map: { ...state.map, environment: environments[index] } })),
+	setIsDay: (isDay) => set((state) => ({ map: { ...state.map, isDay } })),
 	setGameState: (gameState) => set({ gameState }),
 	goToHome: () => set({ page: "home" }),
 }));
@@ -74,49 +80,12 @@ export const startGame = (fromLocal) => {
 	resetSelected();
 };
 
-// export const select = (index) => {
-// 	if (index === -1) {
-// 		useGameStore.setState((state) => ({
-// 			selected: new Selected([0, 0, 0], 0, state.map.items.length, "purple"),
-// 		}));
-// 	} else {
-// 		useGameStore.setState((state) => ({
-// 			selected: new Selected(
-// 				state.map.items[index].gridPosition,
-// 				state.map.items[index].rotation,
-// 				index,
-// 				state.map.items[index].color
-// 			),
-// 		}));
-// 	}
-// };
-
 export const setItems = (items) => {
 	console.log(items);
 	useGameStore.setState((state) => ({
 		map: {
 			...state.map,
 			items: items,
-		},
-	}));
-};
-
-export const setEnvironment = (num) => {
-	let eIndex;
-	unstable_batchedUpdates(() => {
-		eIndex = useGameStore.getState().map.environment.index;
-	});
-	let index = eIndex + num;
-	if (index < 0) {
-		index = environments.length - 1;
-	} else if (index > environments.length - 1) {
-		index = 0;
-	}
-
-	useGameStore.setState((state) => ({
-		map: {
-			...state.map,
-			environment: environments[index],
 		},
 	}));
 };

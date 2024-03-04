@@ -127,12 +127,12 @@ export const rotateSelected = (rotationChange) => {
 			newRot = 1;
 			newAxis.x = false;
 			newAxis.z = true;
-			newPos = { x: 0, y: newPos.y, z: -newPos.x };
+			newPos = { x: -0.25, y: newPos.y, z: -newPos.x };
 		} else {
 			newRot = 2;
 			newAxis.z = false;
 			newAxis.x = true;
-			newPos = { x: -newPos.z, y: newPos.y, z: 0 };
+			newPos = { x: -newPos.z, y: newPos.y, z: 0.25 };
 		}
 	}
 	console.log(newAxis);
@@ -185,9 +185,9 @@ export const moveSelected = (leftRight, upDown) => {
 	if (selected.axis.onFloor()) {
 		newPos = { x: moveXAxis, y: selected.pos.y, z: moveZAxisFloor };
 	} else if (selected.axis.x && selected.axis.y) {
-		newPos = { x: moveXAxis, y: moveYAxis, z: 0 };
+		newPos = { x: moveXAxis, y: moveYAxis, z: selected.pos.z };
 	} else if (selected.axis.z && selected.axis.y) {
-		newPos = { x: 0, y: moveYAxis, z: moveZAxis };
+		newPos = { x: selected.pos.x, y: moveYAxis, z: moveZAxis };
 	} else {
 		newPos = { x: 0, y: 0, z: 0 };
 	}

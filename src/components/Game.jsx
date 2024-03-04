@@ -12,6 +12,8 @@ import * as THREE from "three";
 
 export const Game = ({ map }) => {
 	const gameState = useGameStore((state) => state.gameState);
+	const isDay = useGameStore((state) => state.map.isDay);
+	const environment = map.environment;
 	// console.log(selectedRot, selectedItem);
 
 	return (
@@ -28,7 +30,7 @@ export const Game = ({ map }) => {
 				screenSpacePanning={false}
 			/>
 			<House map={map} gameState={gameState} />
-			<EnvironmentOutside environment={map.environment} />
+			<EnvironmentOutside environment={environment} isDay={isDay} />
 		</>
 	);
 };
@@ -39,9 +41,17 @@ const House = ({ map, gameState }) => {
 	const { scene: floor } = useGLTF("/models/floor.glb");
 	const { gridToVector3 } = useGrid(map);
 
-	const colorWallsFloor = new THREE.Color(map.buildingColor);
-	ColorMaterial(walls, colorWallsFloor, "wall", map.baseColor);
-	ColorMaterial(floor, colorWallsFloor, "floor", map.baseColor);
+	ColorMaterial(walls, map.buildingColor, "wall", map.baseColor);
+	ColorMaterial(floor, map.buildingColor, "floor", map.baseColor);
+
+	const floorColor = new THREE.Color(map.floorColor);
+	floor.traverse((child) => {
+		if (child.name === `floor_baseAccent`) {
+			const clonedMaterialBase = child.material.clone();
+			clonedMaterialBase.color.set(floorColor);
+			child.material = clonedMaterialBase;
+		}
+	});
 
 	return (
 		<>

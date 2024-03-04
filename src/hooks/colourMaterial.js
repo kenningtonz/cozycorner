@@ -3,10 +3,8 @@ import * as THREE from "three";
 
 const ColorMaterial = (scene, color, name, baseColor) => {
 	const colorTiny = tinycolor(color);
-	const baseTiny = tinycolor(baseColor);
 
 	const colorAccent = getAccentColor(colorTiny);
-	const baseAccent = new THREE.Color(getAccentColor(baseTiny));
 
 	scene.traverse((child) => {
 		if (child.name === `${name}_colour`) {
@@ -23,11 +21,6 @@ const ColorMaterial = (scene, color, name, baseColor) => {
 			const clonedMaterialBase = child.material.clone();
 			clonedMaterialBase.color.set(new THREE.Color(baseColor));
 			child.material = clonedMaterialBase;
-		}
-		if (child.name === `${name}_baseAccent`) {
-			const clonedMaterialBaseAccent = child.material.clone();
-			clonedMaterialBaseAccent.color.set(baseAccent);
-			child.material = clonedMaterialBaseAccent;
 		}
 	});
 };

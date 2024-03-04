@@ -22,7 +22,7 @@ const TerrainPlane = ({ color }) => {
 	return <primitive object={scene} position={[0, -0.4, 0]} />;
 };
 
-export const EnvironmentOutside = ({ environment }) => {
+export const EnvironmentOutside = ({ environment, isDay }) => {
 	const {
 		name,
 		terrainColor,
@@ -33,7 +33,6 @@ export const EnvironmentOutside = ({ environment }) => {
 		cloudColor,
 		cloudColor2,
 	} = environment;
-	const isDay = true;
 
 	// const light = useRef();
 	// useHelper(light, THREE.DirectionalLightHelper, 1, "cyan");
@@ -42,6 +41,7 @@ export const EnvironmentOutside = ({ environment }) => {
 	// const { gridToVector3 } = useGrid({ map });
 	// const colorMap = useLoader(TextureLoader, `/textures/${texture}.jpg`);
 	const { scene } = useGLTF(`/models/${name}.glb`);
+	console.log(scene);
 
 	return (
 		<>

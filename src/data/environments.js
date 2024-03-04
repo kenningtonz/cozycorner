@@ -2,6 +2,7 @@ export const environments = [
 	{
 		index: 0,
 		name: "desert",
+		title: "Desert Oasis",
 		skyLight: "#FCF1DC",
 		groundLight: "#BE815C",
 		terrainColor: "#BE815C",
@@ -13,6 +14,7 @@ export const environments = [
 	{
 		index: 1,
 		name: "beach",
+		title: "Sandy Beach",
 		skyLight: "#FCF1DC",
 		groundLight: "#E2C8B6",
 		terrainColor: "#EFDEC7",
@@ -24,6 +26,7 @@ export const environments = [
 	{
 		index: 2,
 		name: "snow",
+		title: "Snowy Forest",
 		skyLight: "#F1F7EA",
 		groundLight: "#41352A",
 		terrainColor: "#EAECE3",

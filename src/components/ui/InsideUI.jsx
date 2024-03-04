@@ -1,9 +1,17 @@
 import { PopoverPicker } from "@components/PopoverColourPicker.jsx";
 import { Joystick, JoystickShape } from "@components/joystick/index.tsx";
 import { motion } from "framer-motion";
-import Icon from "@components/Icon";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHouse } from "@fortawesome/free-solid-svg-icons";
 // import { SoundEffect } from "@components/AudioManager";
-
+import {
+	faRotateRight,
+	faRotateLeft,
+	faTrashCan,
+	faPalette,
+	faPaintRoller,
+	faSwatchbook,
+} from "@fortawesome/free-solid-svg-icons";
 import useSound from "use-sound";
 
 import { useGameStore } from "@gameStore";
@@ -25,6 +33,10 @@ const InsideUI = () => {
 	const baseColor = useGameStore((state) => state.map.baseColor);
 	const setBuildingColor = useGameStore((state) => state.setBuildingColor);
 	const buildingColor = useGameStore((state) => state.map.buildingColor);
+	const setFloorColor = useGameStore((state) => state.setFloorColor);
+	const floorColor = useGameStore((state) => state.map.floorColor);
+
+	console.log("inside");
 
 	return (
 		<motion.section
@@ -32,21 +44,26 @@ const InsideUI = () => {
 			key={"itemsUI"}
 			animate={{ opacity: 1, y: 0 }}
 			exit={{ y: 100, opacity: 0 }}
-			className='rainbowBorder pointer-events-auto '
+			className='rainbowBorder '
 		>
-			<div className='flex rainbowInner gap-4 items-stretch '>
+			<div className='flex rainbowInner gap-4 items-stretch p-4 '>
 				{selected.item !== null ? <SelectedUI selected={selected} /> : <ItemsUI />}
 				<div className='line'></div>
 				<div className='flex flex-col justify-between'>
 					<PopoverPicker
-						iconName={"House"}
+						icon={faSwatchbook}
 						onChange={setBaseColor}
 						color={baseColor}
 					/>
 					<PopoverPicker
-						iconName={"House"}
+						icon={faPaintRoller}
 						onChange={setBuildingColor}
 						color={buildingColor}
+					/>
+					<PopoverPicker
+						icon={faHouse}
+						onChange={setFloorColor}
+						color={floorColor}
 					/>
 				</div>
 			</div>
@@ -101,13 +118,13 @@ const SelectedUI = ({ selected }) => {
 						onClick={() => rotateSelected(1, selected)}
 						className=' col-span-1 w-12 h-12 btn bg-black/5 hover:bg-white/40 '
 					>
-						<Icon name={"RotateLeft"} />
+						<FontAwesomeIcon icon={faRotateLeft} />
 					</button>
 					<button
 						onClick={() => rotateSelected(-1, selected)}
 						className=' col-span-1  w-12 h-12 btn bg-black/5 hover:bg-white/40'
 					>
-						<Icon name={"RotateRight"} />
+						<FontAwesomeIcon icon={faRotateRight} />
 					</button>
 					<Joystick
 						baseClassName={`col-span-2 bg-white/50 `}
@@ -134,12 +151,12 @@ const SelectedUI = ({ selected }) => {
 					</button>
 
 					<button onClick={removeSelected} className=' iconBtn red '>
-						X
+						<FontAwesomeIcon icon={faTrashCan} />
 					</button>
 
 					{selected.color !== null ? (
 						<PopoverPicker
-							iconName={"Droplet"}
+							icon={faPalette}
 							onChange={colorSelected}
 							color={selected.color}
 						/>

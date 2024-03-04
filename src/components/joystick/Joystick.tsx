@@ -3,7 +3,8 @@ import { JoystickShape } from "./enums/shape.enum.ts";
 import { shapeFactory } from "./shapes/shape.factory.ts";
 import { shapeBoundsFactory } from "./shapes/shape.bounds.factory.ts";
 
-import Icon from "@components/Icon";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUpDownLeftRight } from "@fortawesome/free-solid-svg-icons";
 
 export interface IJoystickProps {
 	size?: number;
@@ -463,7 +464,7 @@ class Joystick extends React.Component<IJoystickProps, IJoystickState> {
 					} ${this.props.disabled ? "joystick-disabled" : ""}`}
 					style={stickStyle}
 				>
-					<Icon name={"Move"} color='white' size={30} />
+					<FontAwesomeIcon icon={faUpDownLeftRight} color='white' size={"2xl"} />
 				</button>
 			</div>
 		);
