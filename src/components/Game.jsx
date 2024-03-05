@@ -1,12 +1,18 @@
-import { Environment, OrbitControls, Grid, useGLTF } from "@react-three/drei";
+import {
+	Environment,
+	OrbitControls,
+	useCursor,
+	useGLTF,
+} from "@react-three/drei";
 import { RigidBody } from "@react-three/rapier";
 import { Item } from "@components/Item";
 import { useEffect, useState } from "react";
 import { useGrid } from "../hooks/useGrid";
 import { EnvironmentOutside } from "@components/Environment";
-import ColorMaterial from "@/hooks/colourMaterial";
+import { ColorMaterialAccent } from "@/hooks/colourMaterial";
 import { useGameStore } from "@gameStore";
 import { setSelected, placeSelected } from "@state/selectedStoreFunctions";
+import { SoundEffectManager } from "./AudioManager";
 
 import * as THREE from "three";
 
@@ -14,7 +20,7 @@ export const Game = ({ map }) => {
 	const gameState = useGameStore((state) => state.gameState);
 	const isDay = useGameStore((state) => state.map.isDay);
 	const environment = map.environment;
-	// console.log(selectedRot, selectedItem);
+	// console.log(selectedRot, selectedId);
 
 	return (
 		<>
@@ -36,13 +42,18 @@ export const Game = ({ map }) => {
 };
 
 const House = ({ map, gameState }) => {
-	const selected = useGameStore((state) => state.selected);
-	const { scene: walls } = useGLTF("/models/walls.glb");
-	const { scene: floor } = useGLTF("/models/floor.glb");
+	const { placeSound, selectSound } = SoundEffectManager();
+	const selectedId = useGameStore((state) => state.selectedId);
+	const items = useGameStore((state) => state.items);
+	const { scene: walls } = useGLTF("/models/environment/walls.glb");
+	const { scene: floor } = useGLTF("/models/environment/floor.glb");
 	const { gridToVector3 } = useGrid(map);
+	const [isHovered, setIsHovered] = useState(false);
 
-	ColorMaterial(walls, map.buildingColor, "wall", map.baseColor);
-	ColorMaterial(floor, map.buildingColor, "floor", map.baseColor);
+	useCursor(isHovered /*'pointer', 'auto', document.body*/);
+
+	ColorMaterialAccent(walls, map.buildingColor, "wall");
+	ColorMaterialAccent(floor, map.buildingColor, "floor");
 
 	const floorColor = new THREE.Color(map.floorColor);
 	floor.traverse((child) => {
@@ -55,20 +66,23 @@ const House = ({ map, gameState }) => {
 
 	return (
 		<>
-			{map.items.map((item, index) => (
+			{items.map((item) => (
 				<Item
-					key={`${item.name}-${index}`}
+					key={`${item.id}`}
 					item={item}
-					isSelected={selected.item === index}
-					selected={selected}
 					map={map}
+					gameState={gameState}
+					isHovered={isHovered}
+					onHover={setIsHovered}
 					onClick={() => {
-						if (selected.item !== index && gameState === "inside") {
-							setSelected(index);
+						if (selectedId !== item.id && gameState === "inside") {
+							setSelected(item.id);
+							selectSound();
 							console.log(item);
 						}
-						if (selected.item === index && gameState === "inside") {
-							placeSelected();
+						if (selectedId === item.id && gameState === "inside") {
+							placeSelected(item);
+							placeSound();
 						}
 					}}
 				/>

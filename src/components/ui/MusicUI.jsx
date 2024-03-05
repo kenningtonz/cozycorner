@@ -17,7 +17,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
 
-const MusicUI = ({ changeMusic }) => {
+const MusicUI = ({ selectSound }) => {
 	// console.log(sounds);
 	const { track, volume, playing } = useGameStore((state) => state.audio);
 	const tracks = Object.values(MusicTracks);
@@ -38,7 +38,7 @@ const MusicUI = ({ changeMusic }) => {
 			key={"envUI"}
 			animate={{ opacity: 1, y: 0 }}
 			exit={{ y: 100, opacity: 0 }}
-			className='rainbowBorder'
+			className='rainbowBorder pointer-events-auto'
 		>
 			<div className=' rainbowInner flex flex-col items-center gap-4 p-4'>
 				{/* <Carousel options={Object.values(MusicTracks)} onClick={setAudioTrack} /> */}
@@ -56,7 +56,7 @@ const MusicUI = ({ changeMusic }) => {
 					<motion.button
 						onClick={() => {
 							handleClick(-1);
-							changeMusic();
+							selectSound();
 						}}
 					>
 						<FontAwesomeIcon icon={faBackwardStep} size={"xl"} />
@@ -77,7 +77,7 @@ const MusicUI = ({ changeMusic }) => {
 					<motion.button
 						onClick={() => {
 							handleClick(-1);
-							changeMusic();
+							selectSound();
 						}}
 						className='transition-colors'
 						whileHover={{ color: "red" }}

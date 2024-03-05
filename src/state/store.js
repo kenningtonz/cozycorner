@@ -9,8 +9,6 @@ class Map {
 		this.gridDivision = gridDivision;
 		this.environment = environments[0];
 		this.floorColor = "#cdaa7d";
-		this.baseColor = "#A16C52";
-
 		this.buildingColor = "#DBF760";
 		this.items = [];
 		this.isDay = true;
@@ -36,20 +34,17 @@ export const saveMap = (map) => {
 };
 
 export const useGameStore = create((set) => ({
-	selected: {
-		pos: null,
-		rot: null,
-		color: null,
-		item: null,
-		canDrop: false,
-		axis: null,
-	},
+	itemIsSelected: false,
+	selectedId: null,
+	items: [],
+	muted: false,
 	audio: { playing: false, volume: 0.5, track: 0, musicRef: null },
-	// selected: null,
+
 	localExists: localStorage.getItem("map") !== null,
 	page: "home",
-	setBaseColor: (color) =>
-		set((state) => ({ map: { ...state.map, baseColor: color } })),
+	setMuted: (muted) => set({ muted }),
+	saveItems: () =>
+		set((state) => ({ map: { ...state.map, items: state.items } })),
 	setBuildingColor: (color) =>
 		set((state) => ({ map: { ...state.map, buildingColor: color } })),
 	setFloorColor: (color) =>
@@ -78,14 +73,4 @@ export const startGame = (fromLocal) => {
 		map: new Map({ size: [10, 10], gridDivision: 2 }),
 	}));
 	resetSelected();
-};
-
-export const setItems = (items) => {
-	console.log(items);
-	useGameStore.setState((state) => ({
-		map: {
-			...state.map,
-			items: items,
-		},
-	}));
 };

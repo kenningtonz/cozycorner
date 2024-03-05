@@ -1,20 +1,23 @@
-import { models, Categories } from "@data/models";
+import { models } from "@data/models";
 import { spawnItem } from "@state/selectedStoreFunctions";
 import { Accordion } from "@components/Accordion";
-import { useState } from "react";
+import { SoundEffectManager } from "@components/AudioManager";
 
 const ItemsUI = () => {
-	// const itemsList = Object.values(items);
-	// console.log(models.getItems());
+	const { spawnSound, clickSound } = SoundEffectManager();
 	return (
-		<section className='rainbowBorder'>
-			<div className='pointer-events-auto self-end  justify-self-end rounded-lg '>
+		<section className=''>
+			<div className=' self-end  justify-self-end rounded-lg  '>
 				<Accordion
+					clickSound={clickSound}
 					items={Object.values(models.getCategories()).map((category) => {
-						return <ItemList items={models.getItems()} category={category} />;
-					})}
-					labels={Object.values(models.getCategories()).map((category) => {
-						return category.name;
+						return (
+							<ItemList
+								spawnSound={spawnSound}
+								items={models.getItems()}
+								category={category}
+							/>
+						);
 					})}
 				/>
 			</div>
@@ -22,7 +25,7 @@ const ItemsUI = () => {
 	);
 };
 
-const ItemListItem = ({ item }) => {
+const ItemListItem = ({ item, spawnSound }) => {
 	// console.log(item);
 	return (
 		<button
@@ -30,6 +33,7 @@ const ItemListItem = ({ item }) => {
 			className='flex w-12 h-12 p-0'
 			onClick={(e) => {
 				spawnItem(e.currentTarget.value);
+				spawnSound();
 			}}
 		>
 			<img
@@ -41,17 +45,13 @@ const ItemListItem = ({ item }) => {
 	);
 };
 
-const ItemList = ({ items, category }) => {
-	// console.log(items);
-	// Object.values(items).map((item, index) => {
-	// 	console.log(item.name);
-	// });
+const ItemList = ({ items, category, spawnSound }) => {
 	return (
-		<ul className='flex flex-wrap gap-1'>
+		<ul className='flex flex-wrap gap-2 '>
 			{Object.values(items).map((item, index) =>
 				item.category.name === category.name ? (
-					<li key={`${item.name}-${index}`} className='basis-1/3'>
-						<ItemListItem item={item} />
+					<li key={`${item.name}-${index}`} className='w-12 h-12'>
+						<ItemListItem item={item} spawnSound={spawnSound} />
 					</li>
 				) : null
 			)}

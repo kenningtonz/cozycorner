@@ -21,7 +21,7 @@ module.exports = {
 	theme: {
 		extend: {
 			fontFamily: {
-				sans: ["Dongle"],
+				sans: ["Fredoka"],
 			},
 			colors: {
 				snow: {

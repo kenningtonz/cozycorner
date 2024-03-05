@@ -1,10 +1,12 @@
+import { m } from "framer-motion";
+
 export const items = {
 	chairAWood: {
 		name: "chairAWood",
 		size: [1, 1],
 
 		category: "chairs",
-		color: null,
+		color: [],
 		axis: "floor",
 	},
 	chairA: {
@@ -18,7 +20,7 @@ export const items = {
 		name: "chairBWood",
 		size: [1, 1],
 		category: "chairs",
-		color: null,
+		color: [],
 		axis: "floor",
 	},
 	chairB: {
@@ -46,7 +48,7 @@ export const items = {
 		name: "chairStoolWood",
 		size: [1, 1],
 		category: "chairs",
-		color: null,
+		color: [],
 		axis: "floor",
 	},
 	bedDoubleA: {
@@ -125,15 +127,12 @@ export const items = {
 };
 
 export const Categories = {
-	chairs: { name: "chairs" },
-	beds: { name: "beds" },
-	rugs: { name: "rugs" },
-	tables: { name: "tables" },
-};
-
-export const AxisPlane = {
-	floor: { xz: "xz", xyz: "xyz" },
-	wall: { zy: "zy", xy: "xy" },
+	chairs: { name: "Seating" },
+	beds: { name: "Beds" },
+	rugs: { name: "Rugs" },
+	tables: { name: "Tables" },
+	decor: { name: "Decor" },
+	wall: { name: "Wall" },
 };
 
 class MovableAxis {
@@ -154,8 +153,7 @@ class MovableAxis {
 }
 
 class Model {
-	constructor(name, size, category, color, movableAxis, collidable = true) {
-		// console.log(size);
+	constructor(name, size, category, movableAxis, color, collidable) {
 		this.name = name;
 		this.size = size;
 		this.category = category;
@@ -166,27 +164,47 @@ class Model {
 }
 
 export class Item extends Model {
-	constructor(model, index) {
+	constructor(model, id) {
 		super(
 			model.name,
 			model.size,
 			model.category,
-			model.color,
 			model.axis,
+			model.color,
 			model.collidable
 		);
-		this.index = index;
+		this.id = id;
 		this.rotation = 2;
+
+		this.isSelected = false;
+		this.isOnTable = false;
+		this.tableId = [];
 		console.log(this.axis);
 		this.position = this.axis.onFloor()
 			? { x: 5, y: -0.25, z: -5 }
 			: { x: 5, y: 5, z: 0.25 };
+
+		this.tempPos = this.position;
+		this.tempRot = this.rotation;
+		this.tempCol = this.color;
+		this.tempAxis = this.axis;
+		this.tempCanDrop = false;
 	}
 
-	placeItem(position, rotation, color) {
-		this.position = position;
-		this.rotation = rotation;
-		this.color = color;
+	placeItem() {
+		this.position = this.tempPos;
+		this.rotation = this.tempRot;
+		this.color = this.tempCol;
+		this.axis = this.tempAxis;
+		this.isSelected = false;
+	}
+
+	isDecor() {
+		return this.category === Categories.decor;
+	}
+
+	isTable() {
+		return this.category === Categories.tables;
 	}
 
 	getSize(rotation) {
@@ -197,149 +215,387 @@ export class Item extends Model {
 	}
 }
 
+export class Table extends Item {
+	constructor(model, id) {
+		super(model, id);
+		this.items = [];
+	}
+
+	addItem(itemID) {
+		this.items.push(itemID);
+	}
+
+	removeItem(itemID) {
+		this.items = this.items.filter((i) => i !== itemID);
+	}
+}
+
 const Models = {
 	chairAWood: new Model(
 		"chairAWood",
 		{ x: 1, z: 1, y: 1 },
 		Categories.chairs,
-		null,
-		new MovableAxis(true, false, true)
+		new MovableAxis(true, false, true),
+		[],
+		true
 	),
 	chairA: new Model(
 		"chairA",
 		{ x: 1, z: 1, y: 1 },
 		Categories.chairs,
-		"#87BEE9",
-		new MovableAxis(true, false, true)
+		new MovableAxis(true, false, true),
+		["#87BEE9"],
+		true
 	),
 	chairBWood: new Model(
 		"chairBWood",
 		{ x: 1, z: 1, y: 1 },
 		Categories.chairs,
-		null,
-		new MovableAxis(true, false, true)
+		new MovableAxis(true, false, true),
+		[],
+		true
 	),
 	chairB: new Model(
 		"chairB",
 		{ x: 1, z: 1, y: 1 },
 		Categories.chairs,
-		"#87BEE9",
-		new MovableAxis(true, false, true)
+		new MovableAxis(true, false, true),
+		["#87BEE9"],
+		[],
+		true
 	),
 	chairC: new Model(
 		"chairC",
 		{ x: 1, z: 1, y: 1 },
 		Categories.chairs,
-		"#87BEE9",
-		new MovableAxis(true, false, true)
+		new MovableAxis(true, false, true),
+		["#87BEE9"],
+		[],
+		true
 	),
 	chairStool: new Model(
 		"chairStool",
 		{ x: 1, z: 1, y: 0.5 },
 		Categories.chairs,
-		"#87BEE9",
-		new MovableAxis(true, false, true)
+		new MovableAxis(true, false, true),
+		["#87BEE9"],
+		true
 	),
 	chairStoolWood: new Model(
 		"chairStoolWood",
 		{ x: 1, z: 1, y: 0.5 },
 		Categories.chairs,
-		null,
-		new MovableAxis(true, false, true)
+		new MovableAxis(true, false, true),
+		[],
+		true
 	),
 	bedDoubleA: new Model(
 		"bedDoubleA",
 		{ x: 3, z: 3, y: 1 },
 		Categories.beds,
-		"#87BEE9",
-		new MovableAxis(true, false, true)
+		new MovableAxis(true, false, true),
+		["#87BEE9", "#87BEE9"],
+		true
 	),
 	bedDoubleB: new Model(
 		"bedDoubleB",
 		{ x: 3, z: 3, y: 1 },
 		Categories.beds,
-		"#87BEE9",
-		new MovableAxis(true, false, true)
+		new MovableAxis(true, false, true),
+		["#87BEE9", "#87BEE9"],
+		true
 	),
 	bedSingleA: new Model(
 		"bedSingleA",
 		{ x: 1, z: 3, y: 1 },
 		Categories.beds,
-		"#87BEE9",
-		new MovableAxis(true, false, true)
+		new MovableAxis(true, false, true),
+		["#87BEE9", "#87BEE9"],
+		true
 	),
 	bedSingleB: new Model(
 		"bedSingleB",
 		{ x: 1, z: 3, y: 1 },
 		Categories.beds,
-		"#87BEE9",
-		new MovableAxis(true, false, true)
+		new MovableAxis(true, false, true),
+		["#87BEE9", "#87BEE9"],
+		true
 	),
 	rugRectangleStripes: new Model(
 		"rugRectangleStripes",
 		{ x: 3, z: 2, y: 0 },
 		Categories.rugs,
-		"#DFB76B",
 		new MovableAxis(true, false, true),
+		["#DFB76B"],
 		false
 	),
 	rugRectangle: new Model(
 		"rugRectangle",
 		{ x: 3, z: 2, y: 0 },
 		Categories.rugs,
-		"#DFB76B",
 		new MovableAxis(true, false, true),
+		["#DFB76B"],
 		false
 	),
 	rugOval: new Model(
 		"rugOval",
 		{ x: 3, z: 2, y: 0 },
 		Categories.rugs,
-		"#DFB76B",
 		new MovableAxis(true, false, true),
+		["#DFB76B"],
 		false
 	),
 	cabinetSmall: new Model(
 		"cabinetSmall",
 		{ x: 1, z: 1, y: 1 },
 		Categories.tables,
-		"#CEA879",
-		new MovableAxis(true, false, true)
+		new MovableAxis(true, false, true),
+		["#A16C52", "#CEA879"],
+		true
 	),
 	cabinetMedium: new Model(
 		"cabinetMedium",
 		{ x: 2, z: 1, y: 1 },
 		Categories.tables,
-		"#CEA879",
-		new MovableAxis(true, false, true)
+		new MovableAxis(true, false, true),
+		["#A16C52", "#CEA879"],
+		true
 	),
-	shelfBLarge: new Model(
-		"shelfBLarge",
-		{ x: 2, z: 0.5, y: 0.5 },
-		Categories.tables,
-		"#CEA879",
-		new MovableAxis(true, true, false)
+	// shelfBLarge: new Model(
+	// 	"shelfBLarge",
+	// 	{ x: 2, z: 0.5, y: 0.5 },
+	// 	Categories.tables,
+	// 	new MovableAxis(true, true, false),
+	// 	"#CEA879",
+	// ),
+	// shelfALarge: new Model(
+	// 	"shelfALarge",
+	// 	{ x: 2, z: 0.5, y: 0.5 },
+	// 	Categories.tables,
+	// 	new MovableAxis(true, true, false),
+	// 	"#CEA879",
+	// ),
+	// shelfBSmall: new Model(
+	// 	"shelfBSmall",
+	// 	{ x: 1, z: 0.5, y: 0.5 },
+	// 	Categories.tables,
+	// 	"#CEA879",
+	// 	new MovableAxis(true, true, false)
+	// ),
+	// shelfASmall: new Model(
+	// 	"shelfASmall",
+	// 	{ x: 1, z: 0.5, y: 0.5 },
+	// 	Categories.tables,
+	// 	"#CEA879",
+	// 	new MovableAxis(true, true, false)
+	// ),
+	armchair: new Model(
+		"armchair",
+		{ x: 1.5, z: 1.5, y: 1 },
+		Categories.chairs,
+		new MovableAxis(true, false, true),
+		["#87BEE9", "#87BEE9"],
+		true
 	),
-	shelfALarge: new Model(
-		"shelfALarge",
-		{ x: 2, z: 0.5, y: 0.5 },
-		Categories.tables,
-		"#CEA879",
-		new MovableAxis(true, true, false)
+	couch: new Model(
+		"couch",
+		{ x: 3, z: 1.5, y: 1 },
+		Categories.chairs,
+		new MovableAxis(true, false, true),
+		["#87BEE9", "#87BEE9"],
+		true
 	),
-	shelfBSmall: new Model(
-		"shelfBSmall",
-		{ x: 1, z: 0.5, y: 0.5 },
+	tableLow: new Model(
+		"tableLow",
+		{ x: 2, z: 1, y: 0.5 },
 		Categories.tables,
-		"#CEA879",
-		new MovableAxis(true, true, false)
+		new MovableAxis(true, false, true),
+		[],
+		true
 	),
-	shelfASmall: new Model(
-		"shelfASmall",
-		{ x: 1, z: 0.5, y: 0.5 },
+	tableMedium: new Model(
+		"tableMedium",
+		{ x: 2, z: 2, y: 1 },
 		Categories.tables,
-		"#CEA879",
-		new MovableAxis(true, true, false)
+		new MovableAxis(true, false, true),
+		[],
+		true
+	),
+	tableMediumLong: new Model(
+		"tableMediumLong",
+		{ x: 3, z: 2, y: 1 },
+		Categories.tables,
+		new MovableAxis(true, false, true),
+		[],
+		true
+	),
+	tableSmall: new Model(
+		"tableSmall",
+		{ x: 1, z: 1, y: 1 },
+		Categories.tables,
+		new MovableAxis(true, false, true),
+		[],
+		true
+	),
+	book: new Model(
+		"book",
+		{ x: 0.5, z: 0.5, y: 0.25 },
+		Categories.decor,
+		new MovableAxis(true, false, true),
+		["#87BEE9"],
+		true
+	),
+	bookSet: new Model(
+		"bookSet",
+		{ x: 1, z: 1, y: 0.5 },
+		Categories.decor,
+		new MovableAxis(true, false, true),
+		["#87BEE9", "#87BEE9", "#87BEE9"],
+		true
+	),
+	cactusMedium: new Model(
+		"cactusMedium",
+		{ x: 1, z: 1, y: 1 },
+		Categories.decor,
+		new MovableAxis(true, false, true),
+		[],
+		true
+	),
+	cactusSmall: new Model(
+		"cactusSmall",
+		{ x: 0.5, z: 0.5, y: 0.5 },
+		Categories.decor,
+		new MovableAxis(true, false, true),
+		[],
+		true
+	),
+	candleA: new Model(
+		"candleA",
+		{ x: 0.25, z: 0.25, y: 0.5 },
+		Categories.decor,
+		new MovableAxis(true, false, true),
+		[],
+		true
+	),
+	candleB: new Model(
+		"candleB",
+		{ x: 0.25, z: 0.25, y: 0.25 },
+		Categories.decor,
+		new MovableAxis(true, false, true),
+		[],
+		true
+	),
+	chair50s: new Model(
+		"chair50s",
+		{ x: 1, z: 1, y: 0.75 },
+		Categories.chairs,
+		new MovableAxis(true, false, true),
+		[],
+		true
+	),
+	chairPastel: new Model(
+		"chairPastel",
+		{ x: 1, z: 1, y: 0.75 },
+		Categories.chairs,
+		new MovableAxis(true, false, true),
+		[],
+		true
+	),
+	chairCC: new Model(
+		"chairCC",
+		{ x: 1, z: 1, y: 1.25 },
+		Categories.chairs,
+		new MovableAxis(true, false, true),
+		[],
+		true
+	),
+	chairGoth: new Model(
+		"chairGoth",
+		{ x: 1.5, z: 1.5, y: 1.25 },
+		Categories.chairs,
+		new MovableAxis(true, false, true),
+		[],
+		true
+	),
+	radioA: new Model(
+		"radioA",
+		{ x: 1, z: 0.5, y: 1 },
+		Categories.decor,
+		new MovableAxis(true, false, true),
+		[],
+		true
+	),
+	radioB: new Model(
+		"radioB",
+		{ x: 1, z: 0.5, y: 1 },
+		Categories.decor,
+		new MovableAxis(true, false, true),
+		[],
+		true
+	),
+	radioC: new Model(
+		"radioC",
+		{ x: 1, z: 0.5, y: 1 },
+		Categories.decor,
+		new MovableAxis(true, false, true),
+		[],
+		true
+	),
+	radioD: new Model(
+		"radioD",
+		{ x: 1, z: 0.5, y: 1 },
+		Categories.decor,
+		new MovableAxis(true, false, true),
+		[],
+		true
+	),
+	paintingA: new Model(
+		"paintingA",
+		{ x: 2, z: 0.125, y: 1 },
+		Categories.wall,
+		new MovableAxis(true, true, false),
+		[],
+		true
+	),
+	paintingB: new Model(
+		"paintingB",
+		{ x: 2, z: 0.125, y: 1 },
+		Categories.wall,
+		new MovableAxis(true, true, false),
+		[],
+		true
+	),
+	paintingC: new Model(
+		"paintingC",
+		{ x: 2, z: 0.125, y: 1 },
+		Categories.wall,
+		new MovableAxis(true, true, false),
+		[],
+		true
+	),
+	paintingSmallA: new Model(
+		"paintingSmallA",
+		{ x: 0.25, z: 1, y: 0.25 },
+		Categories.wall,
+		new MovableAxis(true, true, false),
+		[],
+		true
+	),
+	paintingSmallB: new Model(
+		"paintingSmallB",
+		{ x: 0.25, z: 1, y: 0.25 },
+		Categories.wall,
+		new MovableAxis(true, true, false),
+		[],
+		true
+	),
+	paintingSmallC: new Model(
+		"paintingSmallC",
+		{ x: 0.25, z: 1, y: 0.25 },
+		Categories.decor,
+		new MovableAxis(true, false, true),
+		[],
+		true
 	),
 };
 

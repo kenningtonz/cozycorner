@@ -3,10 +3,13 @@ import { motion } from "framer-motion";
 import Credits from "@components/Credits";
 import PopUp from "@components/PopUp";
 
+import { SoundEffectManager } from "@components/AudioManager";
+
 import { useEffect, useState } from "react";
 
 export const Home = () => {
 	const [popUp, setPopUp] = useState(false);
+	const { clickSound } = SoundEffectManager();
 
 	const localExists = useGameStore((state) => state.localExists);
 	return (
@@ -16,7 +19,10 @@ export const Home = () => {
 			<motion.button
 				whileHover={{ scale: 1.03 }}
 				whileTap={{ scale: 0.95 }}
-				onClick={() => startGame(false)}
+				onClick={() => {
+					startGame(false);
+					clickSound();
+				}}
 				className=' rainbowBorder text-3xl rounded-lg  px-4 hover: '
 			>
 				<div className='rainbowInner py-2 px-4'>New Corner</div>
@@ -25,7 +31,10 @@ export const Home = () => {
 				<motion.button
 					whileHover={{ scale: 1.03 }}
 					whileTap={{ scale: 0.95 }}
-					onClick={() => startGame(true)}
+					onClick={() => {
+						startGame(true);
+						clickSound();
+					}}
 					className=' rainbowBorder text-2xl rounded-lg  px-4 hover: '
 				>
 					<div className='rainbowInner py-1 px-3'>Load From Local</div>
@@ -35,7 +44,10 @@ export const Home = () => {
 			<motion.button
 				whileHover={{ scale: 1.03 }}
 				whileTap={{ scale: 0.95 }}
-				onClick={() => setPopUp(true)}
+				onClick={() => {
+					setPopUp(true);
+					clickSound();
+				}}
 				className=' rainbowBorder text-2xl rounded-lg  px-4 self-jusify-end '
 			>
 				<div className='rainbowInner py-1 px-3'>Credits</div>

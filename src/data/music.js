@@ -65,4 +65,28 @@ export const MusicTracks = {
 		artist: "Sakura Girl",
 		path: "/music/Late-at-Night.mp3",
 	},
+	CrescentMoon: {
+		index: 2,
+		name: "Crescent Moon",
+		artist: "Purrple Cat",
+		path: "/music/Crescent-Moon.mp3",
+	},
+	Wanted: {
+		index: 3,
+		name: "Wanted",
+		artist: "Purrple Cat",
+		path: "/music/Wanted.mp3",
+	},
+	ForgottenPlaces: {
+		index: 4,
+		name: "Forgotten Places",
+		artist: "Purrple Cat",
+		path: "/music/Forgotten-Places.mp3",
+	},
+	CozyPlace: {
+		index: 4,
+		name: "Cozy Place",
+		artist: "Keys of Moon",
+		path: "/music/Cozy-Place.mp3",
+	},
 };

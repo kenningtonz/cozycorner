@@ -1,15 +1,23 @@
 import { useGameStore } from "./store";
-import { Item, models } from "../data/models";
+import { Item, models, Table } from "../data/models";
 import { unstable_batchedUpdates } from "react-dom";
 
-const isColliding = (items, selectedItem, position) => {
-	const item = items[selectedItem];
+const isColliding = (selectedId) => {
+	let items;
+	unstable_batchedUpdates(() => {
+		items = useGameStore.getState().items;
+	});
+	const item = items.find((item) => item.id === selectedId);
+	console.log(item);
 	if (item.collidable === false) return true;
-	let droppable = true;
+	let colliding = false;
 
 	// check if item is not colliding with other items
-	items.forEach((otherItem, index) => {
-		if (index === selectedItem) {
+	items.forEach((otherItem) => {
+		const otherItemSize = otherItem.getSize(otherItem.rotation);
+		const itemSize = item.getSize(item.tempRot);
+		// console.log(otherItemSize, itemSize);
+		if (otherItem.id === selectedId) {
 			return;
 		}
 		if (otherItem.collidable === false) {
@@ -18,101 +26,179 @@ const isColliding = (items, selectedItem, position) => {
 
 		const xAxisCheck = () => {
 			return (
-				position.x < otherItem.position.x + otherItem.size.x &&
-				position.x + item.size.x > otherItem.position.x
+				item.tempPos.x < otherItem.position.x + otherItemSize.x &&
+				item.tempPos.x + itemSize.x > otherItem.position.x
 			);
 		};
 
 		const zAxisCheck = () => {
 			return (
-				position.z > otherItem.position.z - otherItem.size.z &&
-				position.z - item.size.z < otherItem.position.z
+				item.tempPos.z > otherItem.position.z - otherItemSize.z &&
+				item.tempPos.z - itemSize.z < otherItem.position.z
 			);
 		};
 
 		const yAxisCheck = () => {
 			return (
-				position.y < otherItem.position.y + otherItem.size.y &&
-				position.y + item.size.y > otherItem.position.y
+				item.tempPos.y < otherItem.position.y + otherItemSize.y &&
+				item.tempPos.y + itemSize.y > otherItem.position.y
 			);
 		};
 
 		//different axis
-		if (item.axis != otherItem.axis) {
+		// console.log(item.axis.onFloor(), otherItem.axis.onFloor());
+		if (
+			(!item.tempAxis.onFloor() && otherItem.axis.onFloor()) ||
+			(item.tempAxis.onFloor() && !otherItem.axis.onFloor())
+		) {
 			//check all axis
+
 			if (yAxisCheck() && xAxisCheck() && zAxisCheck()) {
-				droppable = false;
+				colliding = true;
+				// console.log("allaxischeck", "colliding: ", colliding);
 			}
 		} else if (
-			item.axis.x &&
-			item.axis.y &&
+			item.tempAxis.x &&
+			item.tempAxis.y &&
 			otherItem.axis.x &&
 			otherItem.axis.y
 		) {
 			//check x and y
 			if (yAxisCheck() && xAxisCheck()) {
-				droppable = false;
+				colliding = true;
+				// console.log("x and y axis", "colliding: ", colliding);
 			}
 		} else if (
-			item.axis.z &&
-			item.axis.y &&
+			item.tempAxis.z &&
+			item.tempAxis.y &&
 			otherItem.axis.z &&
 			otherItem.axis.y
 		) {
 			if (yAxisCheck() && zAxisCheck()) {
-				droppable = false;
+				colliding = true;
+				// console.log("y and z", "colliding: ", colliding);
 			}
 			//check z and y
 		} else if (
-			item.axis.x &&
-			item.axis.z &&
+			item.tempAxis.x &&
+			item.tempAxis.z &&
 			otherItem.axis.x &&
 			otherItem.axis.z
 		) {
 			//check x and z
 			if (zAxisCheck() && xAxisCheck()) {
-				droppable = false;
+				colliding = true;
+				// console.log("x and z", "colliding: ", colliding);
 			}
 		}
+
+		if (item.isDecor() && otherItem.isTable() && colliding && !item.isOnTable) {
+			putOnTable(otherItem);
+		}
+
+		if (!colliding && item.isOnTable) {
+			removeFromTable(item);
+		}
+		if (item.isTable() && otherItem.isDecor() && colliding) {
+			item.items.forEach((subItem) => {
+				if (subItem == otherItem.id) {
+					colliding = false;
+				}
+			});
+		}
+		console.log("colliding: ", colliding, "with", otherItem.name);
 	});
 
-	return droppable;
+	return colliding;
+};
+
+const removeFromTable = (itemSelected) => {
+	console.log("remove from table");
+	useGameStore.setState((state) => ({
+		items: state.items.map((item) => {
+			if (item.id === itemSelected.tableId) {
+				item.removeItem(state.selectedId);
+			}
+			if (item.id === state.selectedId) {
+				item.isOnTable = false;
+				item.tableId = null;
+				item.tempPos = { x: item.tempPos.x, y: -0.25, z: item.tempPos.z };
+			}
+			return item;
+		}),
+	}));
+};
+
+const putOnTable = (table) => {
+	console.log("put on table");
+	useGameStore.setState((state) => ({
+		items: state.items.map((item) => {
+			if (item.id === state.selectedId) {
+				item.isOnTable = true;
+				item.tableId = table.id;
+				item.tempPos = {
+					x: item.tempPos.x,
+					y: table.size.y - 0.25,
+					z: item.tempPos.z,
+				};
+			}
+			if (item === table) {
+				item.items.push(state.selectedId);
+				console.log(item);
+			}
+			return item;
+		}),
+	}));
 };
 
 const setCanDrop = () => {
-	useGameStore.setState((state) => ({
-		selected: {
-			...state.selected,
-			canDrop: isColliding(
-				state.map.items,
-				state.selected.item,
-				state.selected.pos
-			),
-		},
-	}));
-};
+	let canDrop = true;
 
-export const colorSelected = (color) => {
-	useGameStore.setState((state) => ({
-		selected: {
-			...state.selected,
-			color: color,
-		},
-	}));
-};
-
-export const rotateSelected = (rotationChange) => {
-	//wall axis can only be 1 or 2
-	let newRot;
-	let newPos;
-	let newAxis;
-
+	let item;
 	unstable_batchedUpdates(() => {
-		const selected = useGameStore.getState().selected;
-		newRot = selected.rot;
-		newAxis = selected.axis;
-		newPos = selected.pos;
+		item = useGameStore
+			.getState()
+			.items.find((item) => item.id === useGameStore.getState().selectedId);
 	});
+	const colliding = isColliding(item.id);
+
+	if (colliding) {
+		console.log("colliding");
+		canDrop = false;
+	}
+
+	if (item.isOnTable) {
+		console.log("on table");
+		canDrop = true;
+	}
+
+	useGameStore.setState((state) => ({
+		items: state.items.map((item) => {
+			if (item.id === state.selectedId) {
+				item.tempCanDrop = canDrop;
+			}
+			return item;
+		}),
+	}));
+};
+
+export const colorSelected = (color, index) => {
+	useGameStore.setState((state) => ({
+		items: state.items.map((item) => {
+			if (item.id === state.selectedId) {
+				item.tempCol[index] = color;
+			}
+			return item;
+		}),
+	}));
+};
+
+export const rotateSelected = (rotationChange, item) => {
+	//wall axis can only be 1 or 2
+	let newRot = item.tempRot;
+	let newPos = item.tempPos;
+	let newAxis = item.tempAxis;
+
 	console.log(newRot);
 	if (newAxis.onFloor()) {
 		newRot = newRot + rotationChange;
@@ -135,175 +221,219 @@ export const rotateSelected = (rotationChange) => {
 			newPos = { x: -newPos.z, y: newPos.y, z: 0.25 };
 		}
 	}
-	console.log(newAxis);
+	// console.log(newRot);
+
 	useGameStore.setState((state) => ({
-		selected: {
-			...state.selected,
-			pos: newPos,
-			rot: newRot,
-			axis: newAxis,
-		},
+		items: state.items.map((item) => {
+			if (item.id === state.selectedId) {
+				console.log(state.selectedId);
+				item.tempRot = newRot;
+				item.tempPos = newPos;
+				item.tempAxis = newAxis;
+			}
+			return item;
+		}),
 	}));
+
+	if (item.isTable() && item.items.length > 0) {
+		item.items.forEach((itemOnTableId) => {
+			useGameStore.setState((state) => ({
+				items: state.items.map((subItem) => {
+					if (subItem.id === itemOnTableId) {
+						subItem.tempPos = newRot;
+					}
+					return subItem;
+				}),
+			}));
+		});
+	}
 	setCanDrop();
 };
 
-export const moveSelected = (leftRight, upDown) => {
-	let selected;
+const getMove = (leftRight, upDown, item) => {
 	let mapSize;
-	let itemSize;
-	let mapDivisions;
-	unstable_batchedUpdates(() => {
-		selected = useGameStore.getState().selected;
-		mapSize = useGameStore.getState().map.size;
-		mapDivisions = useGameStore.getState().map.gridDivision;
-		const item = useGameStore.getState().map.items[selected.item];
-		itemSize = item.getSize(selected.rot);
-		// console.log(itemSize);
-	});
+	const itemSize = item.getSize(item.tempRot);
 
+	unstable_batchedUpdates(() => {
+		mapSize = useGameStore.getState().map.size;
+	});
 	const moveXAxis = Math.min(
 		mapSize[0] - itemSize.x,
-		Math.max(0.25, selected.pos.x + leftRight)
+		Math.max(0.25, item.tempPos.x + leftRight)
 	);
 
 	const moveYAxis = Math.min(
 		mapSize[1] - itemSize.y - 1,
-		Math.max(0.5, selected.pos.y + upDown)
+		Math.max(0.5, item.tempPos.y + upDown)
 	);
 
 	const moveZAxis = Math.max(
 		-mapSize[1] + itemSize.z,
-		Math.min(-0.25, selected.pos.z + leftRight)
+		Math.min(-0.25, item.tempPos.z + leftRight)
 	);
 
 	const moveZAxisFloor = Math.max(
 		-mapSize[1] + itemSize.z,
-		Math.min(-0.25, selected.pos.z + upDown)
+		Math.min(-0.25, item.tempPos.z + upDown)
+	);
+	return { moveXAxis, moveYAxis, moveZAxis, moveZAxisFloor };
+};
+
+export const moveSelected = (leftRight, upDown, item) => {
+	const { moveXAxis, moveYAxis, moveZAxis, moveZAxisFloor } = getMove(
+		leftRight,
+		upDown,
+		item
 	);
 
+	console.log(moveXAxis, moveYAxis, moveZAxis, moveZAxisFloor);
+
+	if (item.isTable() && item.items.length > 0) {
+		item.items.forEach((itemOnTableId) => {
+			useGameStore.setState((state) => ({
+				items: state.items.map((subItem) => {
+					if (subItem.id === itemOnTableId) {
+						const subItemMove = getMove(leftRight, upDown, subItem);
+						console.log(subItemMove);
+						subItem.tempPos = {
+							x: subItemMove.moveXAxis,
+							y: subItem.tempPos.y,
+							z: subItemMove.moveZAxisFloor,
+						};
+					}
+					return subItem;
+				}),
+			}));
+		});
+	}
+
 	let newPos;
-	if (selected.axis.onFloor()) {
-		newPos = { x: moveXAxis, y: selected.pos.y, z: moveZAxisFloor };
-	} else if (selected.axis.x && selected.axis.y) {
-		newPos = { x: moveXAxis, y: moveYAxis, z: selected.pos.z };
-	} else if (selected.axis.z && selected.axis.y) {
-		newPos = { x: selected.pos.x, y: moveYAxis, z: moveZAxis };
+	if (item.tempAxis.onFloor()) {
+		newPos = { x: moveXAxis, y: item.tempPos.y, z: moveZAxisFloor };
+	} else if (item.tempAxis.x && item.tempAxis.y) {
+		newPos = { x: moveXAxis, y: moveYAxis, z: item.tempPos.z };
+	} else if (item.tempAxis.z && item.tempAxis.y) {
+		newPos = { x: item.tempPos.x, y: moveYAxis, z: moveZAxis };
 	} else {
 		newPos = { x: 0, y: 0, z: 0 };
 	}
 	// console.log(newPos);
-	selected.pos = newPos;
+
 	useGameStore.setState((state) => ({
-		selected: {
-			...state.selected,
-			pos: newPos,
-		},
+		items: state.items.map((item) => {
+			if (item.id === state.selectedId) {
+				// console.log(state.selectedId);
+				item.tempPos = newPos;
+			}
+			return item;
+		}),
 	}));
 	setCanDrop();
 };
 
-export const placeSelected = () => {
-	let canDrop;
-	unstable_batchedUpdates(() => {
-		canDrop = useGameStore.getState().selected.canDrop;
-	});
-	console.log(canDrop);
-	if (!canDrop) {
+export const placeSelected = (item) => {
+	console.log(item.tempCanDrop);
+	if (!item.tempCanDrop) {
 		return;
 	}
 	useGameStore.setState((state) => ({
-		map: {
-			...state.map,
-			items: state.map.items.map((item, index) => {
-				if (index === state.selected.item) {
-					console.log(state.selected);
-					item.position = state.selected.pos;
-					item.rotation = state.selected.rot;
-					item.color = state.selected.color;
-					item.axis = state.selected.axis;
-				}
-				return item;
-			}),
-		},
+		items: state.items.map((item) => {
+			if (item.id === state.selectedId) {
+				item.position = item.tempPos;
+				item.rotation = item.tempRot;
+				item.color = item.tempCol;
+				item.axis = item.tempAxis;
+				item.isSelected = false;
+			}
+			return item;
+		}),
 	}));
-	unstable_batchedUpdates(() => {
-		console.log(useGameStore.getState().map.items);
-	});
-	resetSelected();
-};
 
-export const deleteSelected = () => {
-	useGameStore.setState((state) => ({
-		map: {
-			...state.map,
-			items: state.map.items.filter(
-				(item, index) => index !== state.selected.item
-			),
-		},
-	}));
+	if (item.isTable() && item.items.length > 0) {
+		item.items.forEach((itemOnTableId) => {
+			useGameStore.setState((state) => ({
+				items: state.items.map((subItem) => {
+					if (subItem.id === itemOnTableId) {
+						subItem.position = subItem.tempPos;
+						subItem.rotation = subItem.tempRot;
+					}
+					return subItem;
+				}),
+			}));
+		});
+	}
+	unstable_batchedUpdates(() => {
+		console.log(useGameStore.getState().items);
+	});
 	resetSelected();
 };
 
 export const spawnItem = (itemName) => {
 	console.log(itemName);
-	let index;
-	unstable_batchedUpdates(() => {
-		index = useGameStore.getState().map.items.length;
-	});
-	const item = new Item(models.getModelByName(itemName), index);
+
+	const categories = models.getCategories();
+	const model = models.getModelByName(itemName);
+	const itemID = `item-${itemName}-${Date.now()}`;
+
+	const item =
+		model.category === categories.tables
+			? new Table(model, itemID)
+			: new Item(model, itemID);
+	item.isSelected = true;
+	console.log(item);
 	useGameStore.setState((state) => ({
-		map: {
-			...state.map,
-			items: [...state.map.items, item],
-		},
+		items: [...state.items, item],
 	}));
 	unstable_batchedUpdates(() => {
-		console.log(useGameStore.getState().map.items);
+		console.log(useGameStore.getState().items);
 	});
-	setSelected(index);
+	setSelected(itemID);
 	setCanDrop();
 };
 
-export const removeSelected = () => {
+export const removeSelected = (item) => {
+	console.log(item);
+	if (item.isTable() && item.items.length > 0) {
+		item.items.forEach((itemOnTableId) => {
+			useGameStore.setState((state) => ({
+				items: state.items.map((subItem) => {
+					if (subItem.id === itemOnTableId) {
+						subItem.tempPos = { x: item.tempPos.x, y: -0.25, z: item.tempPos.z };
+						subItem.isOnTable = false;
+						subItem.tableId = null;
+						subItem.position = item.tempPos;
+					}
+					return subItem;
+				}),
+			}));
+		});
+	}
 	useGameStore.setState((state) => ({
-		map: {
-			...state.map,
-			items: state.map.items.filter(
-				(item, index) => index !== state.selected.item
-			),
-		},
+		items: state.items.filter((i) => i !== item),
 	}));
 	resetSelected();
 };
 
 export const resetSelected = () => {
-	useGameStore.setState((state) => ({
-		selected: {
-			pos: null,
-			rot: null,
-			color: null,
-			item: null,
-			canDrop: false,
-			axis: null,
-		},
+	useGameStore.setState(() => ({
+		selectedId: null,
 	}));
 };
 
-export const setSelected = (index) => {
-	let item;
-	unstable_batchedUpdates(() => {
-		item = useGameStore.getState().map.items[index];
-	});
-
-	useGameStore.setState((state) => ({
-		selected: {
-			canDrop: true,
-			pos: item.position,
-			rot: item.rotation,
-			item: index,
-			color: item.color,
-			axis: item.axis,
-		},
+export const setSelected = (id) => {
+	useGameStore.setState(() => ({
+		selectedId: id,
 	}));
+	useGameStore.setState((state) => ({
+		items: state.items.map((item) => {
+			if (item.id === id) {
+				item.isSelected = true;
+			} else {
+				item.isSelected = false;
+			}
+			return item;
+		}),
+	}));
+
 	setCanDrop();
 };

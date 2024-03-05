@@ -15,9 +15,12 @@ const PopUp = ({ children, isOpen, setIsOpen }) => {
 					}}
 					className='fixed w-full pointer-events-auto  inset-0 bg-black/50 z-50 flex justify-center items-center'
 				>
-					<div ref={popup} className='bg-white rounded-lg p-4 pointer-events-auto '>
-						{children}
-					</div>
+					<section
+						ref={popup}
+						className='scroll-py-4 rainbowBorder pointer-events-auto w-full max-w-[600px] sm:overflow-auto sm:max-h-[600px] scrollbar'
+					>
+						<div className='rainbowInner p-4'>{children}</div>
+					</section>
 				</div>
 			)}
 		</>

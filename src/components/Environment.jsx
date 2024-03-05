@@ -13,7 +13,7 @@ import * as THREE from "three";
 import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper";
 
 const TerrainPlane = ({ color }) => {
-	const { scene } = useGLTF(`/models/terrain.glb`);
+	const { scene } = useGLTF(`/models/environment/terrain.glb`);
 	scene.traverse((child) => {
 		if (child.isMesh) {
 			child.material.color.set(color);
@@ -40,7 +40,7 @@ export const EnvironmentOutside = ({ environment, isDay }) => {
 
 	// const { gridToVector3 } = useGrid({ map });
 	// const colorMap = useLoader(TextureLoader, `/textures/${texture}.jpg`);
-	const { scene } = useGLTF(`/models/${name}.glb`);
+	const { scene } = useGLTF(`/models/environment/${name}.glb`);
 	console.log(scene);
 
 	return (

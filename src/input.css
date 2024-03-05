@@ -1,8 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url("https://fonts.googleapis.com/css2?family=Dongle:wght@300;400;700&display=swap");
-
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap");
 /* .dongle-regular {
 	font-family: "Dongle", sans-serif;
 	font-weight: 400;
@@ -56,8 +55,23 @@ code {
 } */
 
 .rainbowBorder {
-	@apply rounded-xl p-[6px] backdrop-blur;
+	@apply rounded-xl p-[6px] backdrop-blur rainbowGradientCone;
+}
+
+.rainbowGradientCone {
 	background: conic-gradient(
+		rgba(250, 171, 153, 0.8) 0%,
+		rgba(252, 188, 93, 0.8) 16%,
+		rgba(255, 220, 94, 0.8) 32%,
+		rgba(197, 236, 172, 0.8) 48%,
+		rgba(174, 247, 255, 0.8) 64%,
+		rgba(212, 187, 252, 0.8) 80%,
+		rgba(250, 171, 153, 0.8) 100%
+	);
+}
+
+.rainbowGradient {
+	background: linear-gradient(
 		rgba(250, 171, 153, 0.5) 0%,
 		rgba(252, 188, 93, 0.5) 16%,
 		rgba(255, 220, 94, 0.5) 32%,
@@ -75,3 +89,19 @@ code {
 /* .rainbowAnimate{
 
 } */
+
+.scrollbar::-webkit-scrollbar {
+	@apply rounded-l-xl;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+	@apply bg-transparent shadow-md rounded-r-2xl;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+	@apply bg-white/50 rounded-2xl;
+}
+
+.scrollbar::-webkit-scrollbar-thumb:hover {
+	@apply bg-white/80;
+}

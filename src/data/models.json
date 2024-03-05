@@ -1,0 +1,674 @@
+[
+	{
+		"name": "chairAWood",
+		"size": {
+			"x": 1,
+			"z": 1,
+			"y": 1
+		},
+		"category": "chairs",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": null,
+		"collidable": true
+	},
+	{
+		"name": "chairA",
+		"size": {
+			"x": 1,
+			"z": 1,
+			"y": 1
+		},
+		"category": "chairs",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": "#87BEE9",
+		"collidable": true
+	},
+	{
+		"name": "chairBWood",
+		"size": {
+			"x": 1,
+			"z": 1,
+			"y": 1
+		},
+		"category": "chairs",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": null,
+		"collidable": true
+	},
+	{
+		"name": "chairB",
+		"size": {
+			"x": 1,
+			"z": 1,
+			"y": 1
+		},
+		"category": "chairs",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": "#87BEE9",
+		"collidable": true
+	},
+	{
+		"name": "chairC",
+		"size": {
+			"x": 1,
+			"z": 1,
+			"y": 1
+		},
+		"category": "chairs",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": "#87BEE9",
+		"collidable": true
+	},
+	{
+		"name": "chairStool",
+		"size": {
+			"x": 1,
+			"z": 1,
+			"y": 0.5
+		},
+		"category": "chairs",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": "#87BEE9",
+		"collidable": true
+	},
+	{
+		"name": "chairStoolWood",
+		"size": {
+			"x": 1,
+			"z": 1,
+			"y": 0.5
+		},
+		"category": "chairs",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": null,
+		"collidable": true
+	},
+	{
+		"name": "bedDoubleA",
+		"size": {
+			"x": 3,
+			"z": 3,
+			"y": 1
+		},
+		"category": "beds",
+		"movable": {
+			"x": true,
+			"z": false,
+			"y": true
+		},
+		"color": "#87BEE9",
+		"collidable": true
+	},
+	{
+		"name": "bedDoubleB",
+		"size": {
+			"x": 3,
+			"z": 3,
+			"y": 1
+		},
+		"category": "beds",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": "#87BEE9",
+		"collidable": true
+	},
+	{
+		"name": "bedSingleA",
+		"size": {
+			"x": 1,
+			"z": 3,
+			"y": 1
+		},
+		"category": "beds",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": "#87BEE9",
+		"collidable": true
+	},
+	{
+		"name": "bedSingleB",
+		"size": {
+			"x": 1,
+			"z": 3,
+			"y": 1
+		},
+		"category": "beds",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": "#87BEE9",
+		"collidable": true
+	},
+	{
+		"name": "rugRectangleStripes",
+		"size": {
+			"x": 3,
+			"z": 2,
+			"y": 0
+		},
+		"category": "rugs",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": "#DFB76B",
+		"collidable": false
+	},
+	{
+		"name": "rugRectangle",
+		"size": {
+			"x": 3,
+			"z": 2,
+			"y": 0
+		},
+		"category": "rugs",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": "#DFB76B",
+		"collidable": false
+	},
+	{
+		"name": "rugOval",
+		"size": {
+			"x": 3,
+			"z": 2,
+			"y": 0
+		},
+		"category": "rugs",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": "#DFB76B",
+		"collidable": false
+	},
+	{
+		"name": "cabinetSmall",
+		"size": {
+			"x": 1,
+			"z": 1,
+			"y": 1
+		},
+		"category": "tables",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": "#CEA879",
+		"collidable": true
+	},
+	{
+		"name": "cabinetMedium",
+		"size": {
+			"x": 2,
+			"z": 1,
+			"y": 1
+		},
+		"category": "tables",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": "#CEA879",
+		"collidable": true
+	},
+	{
+		"name": "armchair",
+		"size": {
+			"x": 1.5,
+			"z": 1.5,
+			"y": 1
+		},
+		"category": "chairs",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": "#CEA879",
+		"collidable": true
+	},
+	{
+		"name": "couch",
+		"size": {
+			"x": 3,
+			"z": 1.5,
+			"y": 1
+		},
+		"category": "chairs",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": "#87BEE9",
+		"collidable": true
+	},
+	{
+		"name": "tableLow",
+		"size": {
+			"x": 2,
+			"z": 1,
+			"y": 0.5
+		},
+		"category": "tables",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": "#CEA879",
+		"collidable": true
+	},
+	{
+		"name": "tableMedium",
+		"size": {
+			"x": 2,
+			"z": 2,
+			"y": 1
+		},
+		"category": "tables",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": "#CEA879",
+		"collidable": true
+	},
+	{
+		"name": "tableMediumLong",
+		"size": {
+			"x": 3,
+			"z": 2,
+			"y": 1
+		},
+		"category": "tables",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": "#CEA879",
+		"collidable": true
+	},
+	{
+		"name": "tableSmall",
+		"size": {
+			"x": 1,
+			"z": 1,
+			"y": 1
+		},
+		"category": "tables",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": "#CEA879",
+		"collidable": true
+	},
+	{
+		"name": "book",
+		"size": {
+			"x": 0.5,
+			"z": 0.5,
+			"y": 0.25
+		},
+		"category": "decor",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": null,
+		"collidable": true
+	},
+	{
+		"name": "bookSet",
+		"size": {
+			"x": 1,
+			"z": 1,
+			"y": 0.5
+		},
+		"category": "decor",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": null,
+		"collidable": true
+	},
+	{
+		"name": "cactusMedium",
+		"size": {
+			"x": 1,
+			"z": 1,
+			"y": 1
+		},
+		"category": "decor",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": null,
+		"collidable": true
+	},
+	{
+		"name": "cactusSmall",
+		"size": {
+			"x": 0.5,
+			"z": 0.5,
+			"y": 0.5
+		},
+		"category": "decor",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": null,
+		"collidable": true
+	},
+	{
+		"name": "candleA",
+		"size": {
+			"x": 0.25,
+			"z": 0.25,
+			"y": 0.5
+		},
+		"category": "decor",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": null,
+		"collidable": true
+	},
+	{
+		"name": "candleB",
+		"size": {
+			"x": 0.25,
+			"z": 0.25,
+			"y": 0.25
+		},
+		"category": "decor",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": null,
+		"collidable": true
+	},
+	{
+		"name": "chair50s",
+		"size": {
+			"x": 1,
+			"z": 1,
+			"y": 0.75
+		},
+		"category": "chairs",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": null,
+		"collidable": true
+	},
+	{
+		"name": "chairPastel",
+		"size": {
+			"x": 1,
+			"z": 1,
+			"y": 0.75
+		},
+		"category": "chairs",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": "",
+		"collidable": true
+	},
+	{
+		"name": "chairCC",
+		"size": {
+			"x": 1,
+			"z": 1,
+			"y": 1.25
+		},
+		"category": "chairs",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": null,
+		"collidable": true
+	},
+	{
+		"name": "chairGoth",
+		"size": {
+			"x": 1.5,
+			"z": 1.5,
+			"y": 1.25
+		},
+		"category": "chairs",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": null,
+		"collidable": true
+	},
+	{
+		"name": "radioA",
+		"size": {
+			"x": 1,
+			"z": 0.5,
+			"y": 1
+		},
+		"category": "decor",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": null,
+		"collidable": true
+	},
+	{
+		"name": "radioB",
+		"size": {
+			"x": 1,
+			"z": 0.5,
+			"y": 1
+		},
+		"category": "decor",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": null,
+		"collidable": true
+	},
+	{
+		"name": "radioC",
+		"size": {
+			"x": 1,
+			"z": 0.5,
+			"y": 1
+		},
+		"category": "decor",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": null,
+		"collidable": true
+	},
+	{
+		"name": "radioD",
+		"size": {
+			"x": 1,
+			"z": 0.5,
+			"y": 1
+		},
+		"category": "decor",
+		"movable": {
+			"x": true,
+			"z": true,
+			"y": false
+		},
+		"color": null,
+		"collidable": true
+	},
+	{
+		"name": "paintingA",
+		"size": {
+			"x": 2,
+			"z": 0.125,
+			"y": 1
+		},
+		"category": "wall",
+		"movable": {
+			"x": true,
+			"z": false,
+			"y": true
+		},
+		"color": null,
+		"collidable": true
+	},
+	{
+		"name": "paintingB",
+		"size": {
+			"x": 2,
+			"z": 0.125,
+			"y": 1
+		},
+		"category": "wall",
+		"movable": {
+			"x": true,
+			"z": false,
+			"y": true
+		},
+		"color": null,
+		"collidable": true
+	},
+	{
+		"name": "paintingC",
+		"size": {
+			"x": 2,
+			"z": 0.125,
+			"y": 1
+		},
+		"category": "wall",
+		"movable": {
+			"x": true,
+			"z": false,
+			"y": true
+		},
+		"color": null,
+		"collidable": true
+	},
+	{
+		"name": "paintingSmallA",
+		"size": {
+			"x": 0.25,
+			"z": 1,
+			"y": 0.25
+		},
+		"category": "wall",
+		"movable": {
+			"x": true,
+			"z": false,
+			"y": true
+		},
+		"color": null,
+		"collidable": true
+	},
+	{
+		"name": "paintingSmallB",
+		"size": {
+			"x": 0.25,
+			"z": 1,
+			"y": 0.25
+		},
+		"category": "wall",
+		"movable": {
+			"x": true,
+			"z": false,
+			"y": true
+		},
+		"color": null,
+		"collidable": true
+	},
+	{
+		"name": "paintingSmallC",
+		"size": {
+			"x": 0.25,
+			"z": 1,
+			"y": 0.25
+		},
+		"category": "decor",
+		"movable": {
+			"x": true,
+			"z": false,
+			"y": true
+		},
+		"color": null,
+		"collidable": true
+	}
+]

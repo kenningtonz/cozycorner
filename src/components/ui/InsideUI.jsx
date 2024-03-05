@@ -25,18 +25,15 @@ import {
 
 import ItemsUI from "@ui/ItemsUI";
 import { useEffect } from "react";
+import { SoundEffectManager } from "@components/AudioManager";
 
 const InsideUI = () => {
-	const selected = useGameStore((state) => state.selected);
-	const setBaseColor = useGameStore((state) => state.setBaseColor);
+	const selectedId = useGameStore((state) => state.selectedId);
 
-	const baseColor = useGameStore((state) => state.map.baseColor);
 	const setBuildingColor = useGameStore((state) => state.setBuildingColor);
 	const buildingColor = useGameStore((state) => state.map.buildingColor);
 	const setFloorColor = useGameStore((state) => state.setFloorColor);
 	const floorColor = useGameStore((state) => state.map.floorColor);
-
-	console.log("inside");
 
 	return (
 		<motion.section
@@ -44,17 +41,12 @@ const InsideUI = () => {
 			key={"itemsUI"}
 			animate={{ opacity: 1, y: 0 }}
 			exit={{ y: 100, opacity: 0 }}
-			className='rainbowBorder '
+			className='rainbowBorder pointer-events-auto '
 		>
 			<div className='flex rainbowInner gap-4 items-stretch p-4 '>
-				{selected.item !== null ? <SelectedUI selected={selected} /> : <ItemsUI />}
+				{selectedId != null ? <SelectedUI selectedId={selectedId} /> : <ItemsUI />}
 				<div className='line'></div>
 				<div className='flex flex-col justify-between'>
-					<PopoverPicker
-						icon={faSwatchbook}
-						onChange={setBaseColor}
-						color={baseColor}
-					/>
 					<PopoverPicker
 						icon={faPaintRoller}
 						onChange={setBuildingColor}
@@ -71,57 +63,80 @@ const InsideUI = () => {
 	);
 };
 
-const SelectedUI = ({ selected }) => {
-	const [placeSound] = useSound("/soundEffects/placeItem.mp3");
-	const [errorSound] = useSound("/soundEffects/error.mp3");
+const SelectedUI = ({ selectedId }) => {
+	const { moveSound, rotateSound, placeSound, errorSound, trashSound } =
+		SoundEffectManager();
+	const item = useGameStore((state) =>
+		state.items.find((item) => item.id === selectedId)
+	);
+
+	function cleanup() {
+		document.removeEventListener("keypress", handleKeyPress);
+	}
+
 	useEffect(() => {
 		document.addEventListener("keypress", handleKeyPress);
+		return cleanup;
 	}, []);
 
 	function handleKeyPress(e) {
-		// document.removeEventListener('keypress',handleKeyPress);
 		if (e.key === "w") {
-			moveSelected(0, 0.5);
+			moveSelected(0, 0.5, item);
+			moveSound();
 		}
 		if (e.key === "s") {
-			moveSelected(0, -0.5);
+			moveSelected(0, -0.5, item);
+			moveSound();
 		}
 		if (e.key === "a") {
-			moveSelected(0.5, 0);
+			moveSelected(0.5, 0, item);
+			moveSound();
 		}
 		if (e.key === "d") {
-			moveSelected(-0.5, 0);
+			moveSelected(-0.5, 0, item);
+			moveSound();
 		}
 		if (e.key === "q") {
-			rotateSelected(1, selected);
+			rotateSelected(1, item);
+			rotateSound();
 		}
 		if (e.key === "e") {
-			rotateSelected(-1, selected);
+			rotateSelected(-1, item);
+			rotateSound();
 		}
 		if (e.key === " ") {
-			placeSelected();
+			placeSelected(item);
+			item.tempCanDrop ? placeSound() : errorSound();
 		}
 		if (e.key === "x") {
-			removeSelected();
+			removeSelected(item);
+			trashSound();
 		}
 	}
 	function handleMove(e) {
 		const x = e.x;
 		const y = e.y;
-		moveSelected(-Math.round(x * 2), Math.round(y * 2));
+		moveSelected(-Math.round(x * 2), Math.round(y * 2), item);
+		moveSound();
 	}
 	return (
 		<section className='flex gap-1 space-x-4 justify-self-end '>
 			<div className='min-w-[200px] flex gap-2 rounded-lg '>
 				<div className='grid gap-2 '>
 					<button
-						onClick={() => rotateSelected(1, selected)}
+						onClick={() => {
+							rotateSelected(1, item);
+							rotateSound();
+						}}
 						className=' col-span-1 w-12 h-12 btn bg-black/5 hover:bg-white/40 '
 					>
 						<FontAwesomeIcon icon={faRotateLeft} />
 					</button>
 					<button
-						onClick={() => rotateSelected(-1, selected)}
+						onClick={() => {
+							rotateSelected(-1, item);
+							rotateSound();
+						}}
 						className=' col-span-1  w-12 h-12 btn bg-black/5 hover:bg-white/40'
 					>
 						<FontAwesomeIcon icon={faRotateRight} />
@@ -141,8 +156,8 @@ const SelectedUI = ({ selected }) => {
 					<button
 						onClick={() => {
 							{
-								placeSelected();
-								selected.canDrop ? placeSound() : errorSound();
+								placeSelected(item);
+								item.tempCanDrop ? placeSound() : errorSound();
 							}
 						}}
 						className='btn row-span-2 col-span-2 green'
@@ -150,17 +165,27 @@ const SelectedUI = ({ selected }) => {
 						Place
 					</button>
 
-					<button onClick={removeSelected} className=' iconBtn red '>
+					<button
+						onClick={() => {
+							removeSelected(item);
+							trashSound();
+						}}
+						className=' iconBtn red '
+					>
 						<FontAwesomeIcon icon={faTrashCan} />
 					</button>
 
-					{selected.color !== null ? (
-						<PopoverPicker
-							icon={faPalette}
-							onChange={colorSelected}
-							color={selected.color}
-						/>
-					) : null}
+					{item.tempCol.length > 0
+						? item.tempCol.map((col, index) => {
+								return (
+									<PopoverPicker
+										icon={faPalette}
+										onChange={(e) => colorSelected(e, index)}
+										color={col}
+									/>
+								);
+						  })
+						: null}
 				</div>
 			</div>
 			{/* <DPad move={moveSelected} rotate={rotateSelected} place={placeSelected} /> */}

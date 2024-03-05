@@ -7,6 +7,7 @@ import {
 	faEarthAmericas,
 	faDeleteLeft,
 	faVolumeXmark,
+	faVolumeHigh,
 	faEye,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -16,25 +17,19 @@ import MusicUI from "@ui/MusicUI";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import PopUp from "./PopUp";
-import useSound from "use-sound";
+
+import { SoundEffectManager } from "./AudioManager";
 
 export const UI = ({ map }) => {
-	const [soundMuted, setSoundMuted] = useState(false);
-	const [confirmationSound] = useSound("/soundEffects/confirmation.mp3", {
-		volume: soundMuted ? 0 : 0.5,
-	});
-	const [clickSound] = useSound("/soundEffects/click.mp3", {
-		volume: soundMuted ? 0 : 0.5,
-	});
-	const [questionSound] = useSound("/soundEffects/question.mp3", {
-		volume: soundMuted ? 0 : 0.5,
-	});
-	const [changeMusic] = useSound("/soundEffects/changeMusic.mp3", {
-		volume: soundMuted ? 0 : 0.5,
-	});
+	const setMuted = useGameStore((state) => state.setMuted);
+	const soundMuted = useGameStore((state) => state.muted);
+
 	const goToHome = useGameStore((state) => state.goToHome);
 	const gameState = useGameStore((state) => state.gameState);
 	const setGameState = useGameStore((state) => state.setGameState);
+
+	const { clickSound, questionSound, confirmationSound, selectSound } =
+		SoundEffectManager();
 
 	const [popUp, setPopUp] = useState(false);
 
@@ -125,6 +120,7 @@ export const UI = ({ map }) => {
 					<motion.button
 						onClick={() => {
 							confirmationSound();
+							saveMap(map);
 						}}
 						// whileHover={{ scale: 1.05 }}
 						whileTap={{ scale: 0.95 }}
@@ -135,13 +131,16 @@ export const UI = ({ map }) => {
 				</div>
 				<motion.button
 					onClick={() => {
-						setSoundMuted(!soundMuted);
+						setMuted(!soundMuted);
 						clickSound();
 					}}
 					whileTap={{ scale: 0.95 }}
 					className={`iconBtn relative cursor-pointer pointer-events-auto`}
 				>
-					<FontAwesomeIcon size='xl' icon={faVolumeXmark} />
+					<FontAwesomeIcon
+						size='xl'
+						icon={soundMuted ? faVolumeXmark : faVolumeHigh}
+					/>
 				</motion.button>
 			</section>
 			<PopUp isOpen={popUp} setIsOpen={setPopUp}>
@@ -171,13 +170,15 @@ export const UI = ({ map }) => {
 			</PopUp>
 			<section
 				className={`flex items-center justify-center self-end justify-self-end w-full  transition ${
-					popUp ? `pointer-events-non` : `pointer-events-auto`
+					popUp ? `pointer-events-none` : ``
 				} `}
 			>
 				{/* <AnimatePresence> */}
 				{gameState === "inside" ? <InsideUI /> : null}
-				{gameState === "music" ? <MusicUI changeMusic={changeMusic} /> : null}
-				{gameState === "outside" ? <EnvironmentUI /> : null}
+				{gameState === "music" ? <MusicUI selectSound={selectSound} /> : null}
+				{gameState === "outside" ? (
+					<EnvironmentUI selectSound={selectSound} />
+				) : null}
 				{/* </AnimatePresence> */}
 			</section>
 		</main>
