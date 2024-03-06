@@ -31,6 +31,7 @@ export const ColorMaterial = (scene, colors, name) => {
 			if (child.name === `${name}_colour${letters[index]}`) {
 				const clonedMaterialColor = child.material.clone();
 				clonedMaterialColor.color.set(new THREE.Color(color));
+				clonedMaterialColor.flatShading = true;
 				child.material = clonedMaterialColor;
 			}
 		});

@@ -15,7 +15,7 @@ export const useGrid = (map) => {
 		// const minX = 0 + size[0];
 		// const minZ = 0 + size[1];
 
-		// console.log(gridPosition, size);
+		// console.log(gridPosition);
 		return new THREE.Vector3(
 			size.x / map.gridDivision + gridPosition.x,
 			gridPosition.y,

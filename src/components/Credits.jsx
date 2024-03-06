@@ -124,10 +124,10 @@ const creditData = {
 
 const CreditItem = ({ name, artist, link }) => {
 	return (
-		<li key={name} className='mb-1 '>
-			<p className='text-xs-mb-2'>{name} by </p>
+		<li key={`${name}-key`} className='mb-1 flex items-center justify-between'>
+			<p className='text-sm mr-1'>{name} </p>
 			<a
-				className='text-sm hover:underline decoration-solid decoration-violet-400'
+				className='text-sm hover:underline decoration-solid decoration-lime-600 text-lime-600 text-right'
 				href={link}
 				rel='noopener'
 				target='_blank'
@@ -140,26 +140,28 @@ const CreditItem = ({ name, artist, link }) => {
 
 const Credits = () => {
 	return (
-		<>
-			<h1 className='text-xl text-center'>Credits</h1>
+		<div className='max-w-[400px]'>
+			<h1 className='text-2xl text-center'>Credits</h1>
 			{Object.values(creditData).map((category) => {
 				return (
 					<>
-						<h2>{category.name}</h2>
-						{Object.values(category.items).map((subCat) => (
-							<>
-								<h3 className='text-md'>{subCat.name}</h3>
-								<ul className='flex flex-wrap gap-x-4  justify-stretch'>
-									{subCat.items.map((item) => (
-										<CreditItem name={item.name} artist={item.artist} link={item.link} />
-									))}
-								</ul>
-							</>
-						))}
+						<h2 className='font-semibold text-xl text-center'>{category.name}</h2>
+						<ul className='m-2'>
+							{Object.values(category.items).map((subCat) => (
+								<li key={`${subCat.name}-key`} className='mb-2'>
+									<h3 className='text-lg font-medium'>{subCat.name}</h3>
+									<ul className=''>
+										{subCat.items.map((item) => (
+											<CreditItem name={item.name} artist={item.artist} link={item.link} />
+										))}
+									</ul>
+								</li>
+							))}
+						</ul>
 					</>
 				);
 			})}
-		</>
+		</div>
 	);
 };
 

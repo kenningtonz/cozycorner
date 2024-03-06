@@ -1,4 +1,4 @@
-import { useGameStore, saveUserData, createScreenshot } from "@gameStore";
+import { useGameStore, saveUserData } from "@gameStore";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
 	faMusic,
@@ -9,7 +9,6 @@ import {
 	faVolumeXmark,
 	faVolumeHigh,
 	faEye,
-	faDownload,
 } from "@fortawesome/free-solid-svg-icons";
 import useSound from "use-sound";
 import EnvironmentUI from "@ui/EnvironmentUI";
@@ -18,6 +17,8 @@ import MusicUI from "@ui/MusicUI";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import PopUp from "./PopUp";
+
+import ViewUI from "@ui/ViewUI";
 
 export const UI = () => {
 	const gameState = useGameStore((state) => state.gameState);
@@ -49,13 +50,6 @@ export const UI = () => {
 				} self-start justify-self-start w-full`}
 			>
 				<div className=' flex w-full justify-between '>
-					{/* <ButtonToolTip
-						text={<Icon name={"Back"} />}
-						onClick={() => setPopUp(true)}
-						sound={questionSound}
-						className='red'
-						toolTipText='Back to Home'
-					/> */}
 					<motion.button
 						onClick={() => {
 							setPopUp(true);
@@ -145,25 +139,29 @@ export const UI = () => {
 			</section>
 			<PopUp isOpen={popUp} setIsOpen={setPopUp}>
 				<>
-					<p>Are you sure you want to go back to the home screen?</p>
-					<p>This will reset your corner.</p>
-					<div className='flex gap-4'>
+					<p className='text-center text-xl font-bold '>
+						Are you sure you want to go back to the home screen?
+					</p>
+					<p className='text-center text-lg'>
+						If you haven't saved this will reset your corner.
+					</p>
+					<div className='flex my-2 gap-4 justify-center'>
 						<button
 							onClick={() => {
 								goToHome();
 								setPopUp(false);
 							}}
-							className='uiBtn'
+							className='btn red px-4 py-2'
 						>
-							Yes
+							Back to Home
 						</button>
 						<button
 							onClick={() => {
 								setPopUp(false);
 							}}
-							className='uiBtn'
+							className='btn green px-4 py-2'
 						>
-							No
+							Stay in Corner
 						</button>
 					</div>
 				</>
@@ -183,77 +181,5 @@ export const UI = () => {
 				{/* </AnimatePresence> */}
 			</section>
 		</main>
-	);
-};
-
-const ViewUI = ({ sound }) => {
-	return (
-		<motion.section
-			initial={{ opacity: 0, y: 100 }}
-			key={"envUI"}
-			animate={{ opacity: 1, y: 0 }}
-			exit={{ y: 100, opacity: 0 }}
-			className='rainbowBorder pointer-events-auto '
-		>
-			<div className=' rainbowInner flex items-center gap-4 p-4'>
-				<motion.button
-					onClick={() => {
-						sound();
-						createScreenshot();
-					}}
-					// whileHover={{ scale: 1.05 }}
-					whileTap={{ scale: 0.95 }}
-					className={`iconBtn green relative`}
-				>
-					<FontAwesomeIcon size='xl' icon={faDownload} />
-				</motion.button>
-				<motion.button
-					onClick={() => {
-						sound();
-						saveUserData();
-					}}
-					// whileHover={{ scale: 1.05 }}
-					whileTap={{ scale: 0.95 }}
-					className={`iconBtn green relative`}
-				>
-					<FontAwesomeIcon size='xl' icon={faFloppyDisk} />
-				</motion.button>
-			</div>
-		</motion.section>
-	);
-};
-
-//credits
-const ToolTip = ({ text }) => {
-	return (
-		<div className='absolute sm:top-3 w-32 sm:left-14 top-14 h-6 bg-white/80 rounded-md'>
-			<p className=''> {text}</p>
-		</div>
-	);
-};
-
-const ButtonToolTip = ({ text, onClick, className, toolTipText, sound }) => {
-	const [showToolTip, setShowToolTip] = useState(false);
-
-	return (
-		<motion.button
-			onClick={() => {
-				onClick();
-				sound();
-			}}
-			// whileHover={{ scale: 1.05 }}
-			whileTap={{ scale: 0.95 }}
-			onHoverStart={() => {
-				setShowToolTip(true);
-			}}
-			onHoverEnd={() => {
-				setShowToolTip(false);
-			}}
-			className={`iconBtn ${className} relative`}
-		>
-			{text}
-
-			{showToolTip && <ToolTip text={toolTipText} />}
-		</motion.button>
 	);
 };

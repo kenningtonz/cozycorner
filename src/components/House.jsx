@@ -1,23 +1,14 @@
 import { ColorMaterialAccent } from "@/hooks/colourMaterial";
 import { useGameStore } from "@gameStore";
 import { setSelected, placeSelected } from "@state/selectedStoreFunctions";
-import { SoundEffectManager } from "./AudioManager";
 import { Item } from "@components/Item";
 import { useState } from "react";
 import { useGrid } from "../hooks/useGrid";
 import { useCursor, useGLTF } from "@react-three/drei";
 import useSound from "use-sound";
 import * as THREE from "three";
-import { useThree } from "@react-three/fiber";
-import { useShallow } from "zustand/react/shallow";
 
 const House = () => {
-	const setScreenshot = useGameStore(useShallow((state) => state.setScreenshot));
-
-	const gl = useThree((state) => state.gl);
-	console.log(gl);
-	setScreenshot(gl.domElement);
-
 	const items = useGameStore((state) => state.items);
 	const map = useGameStore((state) => state.map);
 	const gameState = useGameStore((state) => state.gameState);
@@ -75,6 +66,7 @@ const House = () => {
 			))}
 			<primitive
 				object={walls}
+				receiveShadow
 				position={gridToVector3(
 					{ x: -0.5, y: -0.5, z: 0.5 },
 					{ x: 10.5, z: 10.5, y: 10.5 }
@@ -82,6 +74,7 @@ const House = () => {
 			/>
 			<primitive
 				object={floor}
+				receiveShadow
 				position={gridToVector3(
 					{ x: -0.5, y: -0.5, z: 0.5 },
 					{ x: 10.5, z: 10.5, y: 10.5 }

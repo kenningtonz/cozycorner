@@ -3,11 +3,12 @@ import House from "@components/House";
 import EnvironmentOutside from "@components/Environment";
 import { useGameStore } from "@state/store";
 
-import { useEffect } from "react";
-
+import { useThree } from "@react-three/fiber";
+import { useShallow } from "zustand/react/shallow";
 export const Game = () => {
-	// console.log(selectedRot, selectedId);
-	// console.log("game rerender");
+	const gl = useThree((state) => state.gl);
+	const setScreenshot = useGameStore(useShallow((state) => state.setScreenshot));
+	setScreenshot(gl.domElement);
 
 	return (
 		<>

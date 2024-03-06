@@ -55,7 +55,6 @@ const isColliding = (selectedId) => {
 
 			if (yAxisCheck() && xAxisCheck() && zAxisCheck()) {
 				colliding = true;
-				// console.log("allaxischeck", "colliding: ", colliding);
 			}
 		} else if (
 			item.tempAxis.x &&
@@ -113,7 +112,7 @@ const isColliding = (selectedId) => {
 };
 
 const removeFromTable = (itemSelected) => {
-	// console.log("remove from table");
+	console.log("remove from table");
 	useGameStore.setState((state) => ({
 		items: state.items.map((item) => {
 			if (item.id === itemSelected.tableId) {
@@ -130,7 +129,7 @@ const removeFromTable = (itemSelected) => {
 };
 
 const putOnTable = (table) => {
-	// console.log("put on table");
+	console.log("put on table");
 	useGameStore.setState((state) => ({
 		items: state.items.map((item) => {
 			if (item.id === state.selectedId) {
@@ -241,23 +240,10 @@ export const rotateSelected = (rotationChange, item) => {
 			useGameStore.setState((state) => ({
 				items: state.items.map((subItem) => {
 					if (subItem.id === itemOnTableId) {
-						if (rotationChange == 1) {
-							//x decreases
-							// z increases
-							subItem.tempPos = {
-								x: subItem.tempPos.x - itemSize.z / 2,
-								y: subItem.tempPos.y,
-								z: subItem.tempPos.z - itemSize.z + subItem.size.x,
-							};
-						} else {
-							//z decreases\//
-							subItem.tempPos = {
-								x: subItem.tempPos.x + itemSize.x / 2,
-								y: subItem.tempPos.y,
-								z: subItem.tempPos.z + itemSize.z / 2,
-							};
-						}
+						subItem.tempPos = subItem.tempPos - item.tempPos;
 						subItem.tempRot = newRot;
+
+						subItem.tempPos = subItem.tempPos + item.tempPos;
 					}
 					return subItem;
 				}),

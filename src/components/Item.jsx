@@ -1,5 +1,5 @@
 import { useGrid } from "../hooks/useGrid";
-import { useRef } from "react";
+import { Children, useRef } from "react";
 import { ColorMaterial } from "@/hooks/colourMaterial";
 import { useGLTF, Clone, Outlines, useHelper } from "@react-three/drei";
 import * as THREE from "three";
@@ -28,6 +28,14 @@ export const Item = ({ item, onClick, map, onHover, isHovered, gameState }) => {
 		ColorMaterial(scene, colors, name);
 	}
 
+	scene.traverse((child) => {
+		// console.log(child);
+		if (child.isMesh) {
+			child.castShadow = true;
+			child.receiveShadow = true;
+		}
+	});
+
 	// if(item.isOnTable && )
 	const hoverY = isSelected && axis.onFloor() ? 0.1 : 0;
 	const hoverZ = isSelected && axis.x && axis.y ? -0.1 : 0;
@@ -42,11 +50,14 @@ export const Item = ({ item, onClick, map, onHover, isHovered, gameState }) => {
 					gameState === "inside"
 						? (e) => {
 								onHover(true);
+								console.log(e);
 						  }
 						: null
 				}
 				onPointerOut={isHovered ? () => onHover(false) : null}
-				onClick={onClick}
+				onPointerDown={(e) => {
+					console.log(e);
+				}}
 			>
 				<Clone
 					ref={box}

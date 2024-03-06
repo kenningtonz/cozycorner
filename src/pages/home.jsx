@@ -4,7 +4,7 @@ import Credits from "@components/Credits";
 import PopUp from "@components/PopUp";
 
 import useSound from "use-sound";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export const Home = () => {
 	const [popUp, setPopUp] = useState(false);
@@ -18,7 +18,7 @@ export const Home = () => {
 
 	return (
 		<main className='flex flex-col items-center justify-center h-screen gap-4 rainbowAnimated '>
-			<h1 className='text-6xl'>Comfort Corner</h1>
+			<h1 className=' text-center text-6xl'>Comfort Corner</h1>
 
 			<motion.button
 				whileHover={{ scale: 1.03 }}
@@ -52,7 +52,7 @@ export const Home = () => {
 					setPopUp(true);
 					clickSound();
 				}}
-				className='  py-2 px-4 text-3xl rounded-lg shadow-md bg-white/50 hover:bg-white/90 self-jusify-end '
+				className='  py-2 px-4 text-3xl rounded-lg shadow-md bg-white/50 hover:bg-white/90 self-justify-end '
 			>
 				Credits
 			</motion.button>

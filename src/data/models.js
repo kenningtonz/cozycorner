@@ -406,14 +406,6 @@ const Models = {
 		[],
 		true
 	),
-	trash: new Model(
-		"trash",
-		{ x: 1, z: 1, y: 1 },
-		Categories.decor,
-		new MovableAxis(true, false, true),
-		["#64696E"],
-		true
-	),
 	duck: new Model(
 		"duck",
 		{ x: 0.5, z: 0.5, y: 0.5 },
