@@ -7,10 +7,11 @@ import {
 	BakeShadows,
 	Clouds,
 	Cloud,
+	Clone,
 	useHelper,
 } from "@react-three/drei";
 import * as THREE from "three";
-import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper";
+import { useGameStore } from "@gameStore";
 
 const TerrainPlane = ({ color }) => {
 	const { scene } = useGLTF(`/models/environment/terrain.glb`);
@@ -19,29 +20,22 @@ const TerrainPlane = ({ color }) => {
 			child.material.color.set(color);
 		}
 	});
+	// console.log("terrain rerender");
 	return <primitive object={scene} position={[0, -0.4, 0]} />;
 };
 
-export const EnvironmentOutside = ({ environment, isDay }) => {
-	const {
-		name,
-		terrainColor,
-		skyLight,
-		groundLight,
-		skyColor,
-		skyColor2,
-		cloudColor,
-		cloudColor2,
-	} = environment;
+//for later
+{
+	/* <Glow scale={size * 1.2} near={-25} color={glow || emissive || color} />
+<Sparkles count={amount} scale={size * 2} size={6} speed={0.4} /> */
+}
 
-	// const light = useRef();
-	// useHelper(light, THREE.DirectionalLightHelper, 1, "cyan");
-	// useHelper(light, RectAreaLightHelper, "red");
+const EnvironmentOutside = () => {
+	const env = useGameStore((state) => state.environment);
+	const isDay = useGameStore((state) => state.isDay);
+	// console.log("envi rerender");
 
-	// const { gridToVector3 } = useGrid({ map });
-	// const colorMap = useLoader(TextureLoader, `/textures/${texture}.jpg`);
-	const { scene } = useGLTF(`/models/environment/${name}.glb`);
-	console.log(scene);
+	const { scene } = useGLTF(`/models/environment/${env.name}.glb`);
 
 	return (
 		<>
@@ -49,13 +43,13 @@ export const EnvironmentOutside = ({ environment, isDay }) => {
 			<GradientTexture
 				attach='background'
 				stops={[0, 1]} // As many stops as you want
-				colors={[skyColor, skyColor2]} // Colors need to match the number of stops
+				colors={[env.skyColor, env.skyColor2]} // Colors need to match the number of stops
 			/>
 			<ambientLight intensity={isDay ? 0.5 : 0.1} />
 			<hemisphereLight
 				intensity={isDay ? 0.5 : 0.4}
-				color={skyLight}
-				groundColor={groundLight}
+				color={env.skyLight}
+				groundColor={env.groundLight}
 			/>
 			<rectAreaLight
 				// ref={light}
@@ -92,7 +86,7 @@ export const EnvironmentOutside = ({ environment, isDay }) => {
 					volume={20}
 					seed={2}
 					scale={2}
-					color={cloudColor}
+					color={env.cloudColor}
 				/>
 				<Cloud
 					concentrate='outside'
@@ -101,14 +95,16 @@ export const EnvironmentOutside = ({ environment, isDay }) => {
 					seed={1}
 					scale={2}
 					volume={20}
-					color={cloudColor2}
+					color={env.cloudColor2}
 					fade={100}
 				/>
 			</Clouds>
-			<TerrainPlane color={terrainColor} />
+			<TerrainPlane color={env.terrainColor} />
 
-			<primitive object={scene} position={[0, -0.4, 0]} />
+			<Clone object={scene} position={[0, -0.4, 0]} />
 			<BakeShadows />
 		</>
 	);
 };
+
+export default EnvironmentOutside;

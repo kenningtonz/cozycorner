@@ -3,17 +3,21 @@ import { motion } from "framer-motion";
 import Credits from "@components/Credits";
 import PopUp from "@components/PopUp";
 
-import { SoundEffectManager } from "@components/AudioManager";
-
+import useSound from "use-sound";
 import { useEffect, useState } from "react";
 
 export const Home = () => {
 	const [popUp, setPopUp] = useState(false);
-	const { clickSound } = SoundEffectManager();
 
+	const [clickSound] = useSound("/soundEffects/click.mp3", {
+		volume: 0.5,
+	});
 	const localExists = useGameStore((state) => state.localExists);
+
+	console.log("home rerender");
+
 	return (
-		<main className='flex flex-col items-center justify-center h-screen gap-4 '>
+		<main className='flex flex-col items-center justify-center h-screen gap-4 rainbowAnimated '>
 			<h1 className='text-6xl'>Comfort Corner</h1>
 
 			<motion.button
@@ -23,9 +27,9 @@ export const Home = () => {
 					startGame(false);
 					clickSound();
 				}}
-				className=' rainbowBorder text-3xl rounded-lg  px-4 hover: '
+				className=' py-2 px-4 text-3xl rounded-lg shadow-md bg-white/50 hover:bg-white/90 '
 			>
-				<div className='rainbowInner py-2 px-4'>New Corner</div>
+				New Corner
 			</motion.button>
 			{localExists && (
 				<motion.button
@@ -35,9 +39,9 @@ export const Home = () => {
 						startGame(true);
 						clickSound();
 					}}
-					className=' rainbowBorder text-2xl rounded-lg  px-4 hover: '
+					className=' py-2 px-4 text-3xl rounded-lg shadow-md bg-white/50 hover:bg-white/90'
 				>
-					<div className='rainbowInner py-1 px-3'>Load From Local</div>
+					Load From Local
 				</motion.button>
 			)}
 
@@ -48,9 +52,9 @@ export const Home = () => {
 					setPopUp(true);
 					clickSound();
 				}}
-				className=' rainbowBorder text-2xl rounded-lg  px-4 self-jusify-end '
+				className='  py-2 px-4 text-3xl rounded-lg shadow-md bg-white/50 hover:bg-white/90 self-jusify-end '
 			>
-				<div className='rainbowInner py-1 px-3'>Credits</div>
+				Credits
 			</motion.button>
 
 			<PopUp isOpen={popUp} setIsOpen={setPopUp}>

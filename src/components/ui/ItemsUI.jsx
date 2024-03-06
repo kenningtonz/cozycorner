@@ -1,10 +1,15 @@
 import { models } from "@data/models";
 import { spawnItem } from "@state/selectedStoreFunctions";
 import { Accordion } from "@components/Accordion";
-import { SoundEffectManager } from "@components/AudioManager";
+import useSound from "use-sound";
+const ItemsUI = ({ muted }) => {
+	const [spawnSound] = useSound("/soundEffects/spawn.mp3", {
+		volume: muted ? 0 : 0.5,
+	});
+	const [clickSound] = useSound("/soundEffects/click.mp3", {
+		volume: muted ? 0 : 0.5,
+	});
 
-const ItemsUI = () => {
-	const { spawnSound, clickSound } = SoundEffectManager();
 	return (
 		<section className=''>
 			<div className=' self-end  justify-self-end rounded-lg  '>

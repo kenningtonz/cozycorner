@@ -1,4 +1,4 @@
-import { useGameStore, saveMap } from "@gameStore";
+import { useGameStore, saveUserData, createScreenshot } from "@gameStore";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
 	faMusic,
@@ -9,8 +9,9 @@ import {
 	faVolumeXmark,
 	faVolumeHigh,
 	faEye,
+	faDownload,
 } from "@fortawesome/free-solid-svg-icons";
-
+import useSound from "use-sound";
 import EnvironmentUI from "@ui/EnvironmentUI";
 import InsideUI from "@ui/InsideUI";
 import MusicUI from "@ui/MusicUI";
@@ -18,29 +19,28 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import PopUp from "./PopUp";
 
-import { SoundEffectManager } from "./AudioManager";
-
-export const UI = ({ map }) => {
-	const setMuted = useGameStore((state) => state.setMuted);
-	const soundMuted = useGameStore((state) => state.muted);
-
-	const goToHome = useGameStore((state) => state.goToHome);
+export const UI = () => {
 	const gameState = useGameStore((state) => state.gameState);
 	const setGameState = useGameStore((state) => state.setGameState);
-
-	const { clickSound, questionSound, confirmationSound, selectSound } =
-		SoundEffectManager();
-
+	const goToHome = useGameStore((state) => state.goToHome);
+	const setMuted = useGameStore((state) => state.setMuted);
+	const soundMuted = useGameStore((state) => state.muted);
+	const [clickSound] = useSound("/soundEffects/click.mp3", {
+		volume: soundMuted ? 0 : 0.5,
+	});
+	const [confirmationSound] = useSound("/soundEffects/confirmation.mp3", {
+		volume: soundMuted ? 0 : 0.5,
+	});
+	const [questionSound] = useSound("/soundEffects/question.mp3", {
+		volume: soundMuted ? 0 : 0.5,
+	});
+	const [selectSound] = useSound("/soundEffects/select.mp3", {
+		volume: soundMuted ? 0 : 0.5,
+	});
 	const [popUp, setPopUp] = useState(false);
 
-	//hide ui button
-	//save button
-	//gamestates
-	//environment
-	//music
-
 	//floors
-	console.log(gameState);
+	console.log("ui rereender");
 	return (
 		<main className='absolute top-0 inset-4 flex flex-col pointer-events-none justify-between items-center overflow-hidden'>
 			<section
@@ -120,7 +120,7 @@ export const UI = ({ map }) => {
 					<motion.button
 						onClick={() => {
 							confirmationSound();
-							saveMap(map);
+							saveUserData();
 						}}
 						// whileHover={{ scale: 1.05 }}
 						whileTap={{ scale: 0.95 }}
@@ -174,14 +174,52 @@ export const UI = ({ map }) => {
 				} `}
 			>
 				{/* <AnimatePresence> */}
-				{gameState === "inside" ? <InsideUI /> : null}
+				{gameState === "inside" ? <InsideUI muted={soundMuted} /> : null}
 				{gameState === "music" ? <MusicUI selectSound={selectSound} /> : null}
 				{gameState === "outside" ? (
 					<EnvironmentUI selectSound={selectSound} />
 				) : null}
+				{gameState === "view" ? <ViewUI sound={confirmationSound} /> : null}
 				{/* </AnimatePresence> */}
 			</section>
 		</main>
+	);
+};
+
+const ViewUI = ({ sound }) => {
+	return (
+		<motion.section
+			initial={{ opacity: 0, y: 100 }}
+			key={"envUI"}
+			animate={{ opacity: 1, y: 0 }}
+			exit={{ y: 100, opacity: 0 }}
+			className='rainbowBorder pointer-events-auto '
+		>
+			<div className=' rainbowInner flex items-center gap-4 p-4'>
+				<motion.button
+					onClick={() => {
+						sound();
+						createScreenshot();
+					}}
+					// whileHover={{ scale: 1.05 }}
+					whileTap={{ scale: 0.95 }}
+					className={`iconBtn green relative`}
+				>
+					<FontAwesomeIcon size='xl' icon={faDownload} />
+				</motion.button>
+				<motion.button
+					onClick={() => {
+						sound();
+						saveUserData();
+					}}
+					// whileHover={{ scale: 1.05 }}
+					whileTap={{ scale: 0.95 }}
+					className={`iconBtn green relative`}
+				>
+					<FontAwesomeIcon size='xl' icon={faFloppyDisk} />
+				</motion.button>
+			</div>
+		</motion.section>
 	);
 };
 

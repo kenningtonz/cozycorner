@@ -5,8 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons";
 
 const EnvironmentUI = ({ selectSound }) => {
-	const activeEnvironment = useGameStore((state) => state.map.environment.index);
-	const isDay = useGameStore((state) => state.map.isDay);
+	const activeEnvironment = useGameStore((state) => state.environment.index);
+	const isDay = useGameStore((state) => state.isDay);
 	const setIsDay = useGameStore((state) => state.setIsDay);
 	const setEnvironment = useGameStore((state) => state.setEnvironment);
 

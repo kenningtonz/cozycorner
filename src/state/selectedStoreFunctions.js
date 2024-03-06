@@ -9,7 +9,7 @@ const isColliding = (selectedId) => {
 	});
 	const item = items.find((item) => item.id === selectedId);
 	console.log(item);
-	if (item.collidable === false) return true;
+	if (item.collidable === false) return false;
 	let colliding = false;
 
 	// check if item is not colliding with other items
@@ -106,14 +106,14 @@ const isColliding = (selectedId) => {
 				}
 			});
 		}
-		console.log("colliding: ", colliding, "with", otherItem.name);
+		// console.log("colliding: ", colliding, "with", otherItem.name);
 	});
 
 	return colliding;
 };
 
 const removeFromTable = (itemSelected) => {
-	console.log("remove from table");
+	// console.log("remove from table");
 	useGameStore.setState((state) => ({
 		items: state.items.map((item) => {
 			if (item.id === itemSelected.tableId) {
@@ -130,7 +130,7 @@ const removeFromTable = (itemSelected) => {
 };
 
 const putOnTable = (table) => {
-	console.log("put on table");
+	// console.log("put on table");
 	useGameStore.setState((state) => ({
 		items: state.items.map((item) => {
 			if (item.id === state.selectedId) {
@@ -144,7 +144,7 @@ const putOnTable = (table) => {
 			}
 			if (item === table) {
 				item.items.push(state.selectedId);
-				console.log(item);
+				// console.log(item);
 			}
 			return item;
 		}),
@@ -163,12 +163,10 @@ const setCanDrop = () => {
 	const colliding = isColliding(item.id);
 
 	if (colliding) {
-		console.log("colliding");
 		canDrop = false;
 	}
 
 	if (item.isOnTable) {
-		console.log("on table");
 		canDrop = true;
 	}
 
@@ -226,7 +224,7 @@ export const rotateSelected = (rotationChange, item) => {
 	useGameStore.setState((state) => ({
 		items: state.items.map((item) => {
 			if (item.id === state.selectedId) {
-				console.log(state.selectedId);
+				// console.log(state.selectedId);
 				item.tempRot = newRot;
 				item.tempPos = newPos;
 				item.tempAxis = newAxis;
@@ -235,12 +233,31 @@ export const rotateSelected = (rotationChange, item) => {
 		}),
 	}));
 
+	// console.log(newRot);
+	const itemSize = item.getSize(newRot);
+
 	if (item.isTable() && item.items.length > 0) {
 		item.items.forEach((itemOnTableId) => {
 			useGameStore.setState((state) => ({
 				items: state.items.map((subItem) => {
 					if (subItem.id === itemOnTableId) {
-						subItem.tempPos = newRot;
+						if (rotationChange == 1) {
+							//x decreases
+							// z increases
+							subItem.tempPos = {
+								x: subItem.tempPos.x - itemSize.z / 2,
+								y: subItem.tempPos.y,
+								z: subItem.tempPos.z - itemSize.z + subItem.size.x,
+							};
+						} else {
+							//z decreases\//
+							subItem.tempPos = {
+								x: subItem.tempPos.x + itemSize.x / 2,
+								y: subItem.tempPos.y,
+								z: subItem.tempPos.z + itemSize.z / 2,
+							};
+						}
+						subItem.tempRot = newRot;
 					}
 					return subItem;
 				}),
@@ -286,7 +303,7 @@ export const moveSelected = (leftRight, upDown, item) => {
 		item
 	);
 
-	console.log(moveXAxis, moveYAxis, moveZAxis, moveZAxisFloor);
+	// console.log(moveXAxis, moveYAxis, moveZAxis, moveZAxisFloor);
 
 	if (item.isTable() && item.items.length > 0) {
 		item.items.forEach((itemOnTableId) => {
@@ -294,7 +311,7 @@ export const moveSelected = (leftRight, upDown, item) => {
 				items: state.items.map((subItem) => {
 					if (subItem.id === itemOnTableId) {
 						const subItemMove = getMove(leftRight, upDown, subItem);
-						console.log(subItemMove);
+						// console.log(subItemMove);
 						subItem.tempPos = {
 							x: subItemMove.moveXAxis,
 							y: subItem.tempPos.y,
@@ -332,7 +349,7 @@ export const moveSelected = (leftRight, upDown, item) => {
 };
 
 export const placeSelected = (item) => {
-	console.log(item.tempCanDrop);
+	// console.log(item.tempCanDrop);
 	if (!item.tempCanDrop) {
 		return;
 	}
@@ -341,7 +358,7 @@ export const placeSelected = (item) => {
 			if (item.id === state.selectedId) {
 				item.position = item.tempPos;
 				item.rotation = item.tempRot;
-				item.color = item.tempCol;
+				item.colors = item.tempCol;
 				item.axis = item.tempAxis;
 				item.isSelected = false;
 			}
@@ -362,9 +379,6 @@ export const placeSelected = (item) => {
 			}));
 		});
 	}
-	unstable_batchedUpdates(() => {
-		console.log(useGameStore.getState().items);
-	});
 	resetSelected();
 };
 
@@ -380,19 +394,14 @@ export const spawnItem = (itemName) => {
 			? new Table(model, itemID)
 			: new Item(model, itemID);
 	item.isSelected = true;
-	console.log(item);
 	useGameStore.setState((state) => ({
 		items: [...state.items, item],
 	}));
-	unstable_batchedUpdates(() => {
-		console.log(useGameStore.getState().items);
-	});
 	setSelected(itemID);
 	setCanDrop();
 };
 
 export const removeSelected = (item) => {
-	console.log(item);
 	if (item.isTable() && item.items.length > 0) {
 		item.items.forEach((itemOnTableId) => {
 			useGameStore.setState((state) => ({

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useGameStore } from "@state/store";
 
 const AccordionItem = ({ content, label, onClick, index, isOpen }) => {
 	return (
@@ -12,7 +13,7 @@ const AccordionItem = ({ content, label, onClick, index, isOpen }) => {
 			<button
 				className={`${
 					isOpen ? "rounded-l-lg" : "rounded-lg"
-				}  max-w-10 pt-1 text-md cursor-pointer w-full flex justify-center items-center  bg-green-300/50 hover:bg-green-300/80 transition-colors duration-1000 ease-in-out`}
+				}  max-w-10 pt-1 text-md cursor-pointer w-full flex justify-center items-center  bg-lime-300/50 hover:bg-lime-300/80 transition-colors duration-1000 ease-in-out`}
 				onClick={onClick}
 				data-open={isOpen}
 			>
@@ -30,18 +31,19 @@ const AccordionItem = ({ content, label, onClick, index, isOpen }) => {
 };
 
 export const Accordion = ({ items, clickSound }) => {
-	const [openCategory, setOpenCategory] = useState(0);
+	const categoryOpen = useGameStore((state) => state.categoryOpen);
+	const setCategoryOpen = useGameStore((state) => state.setCategoryOpen);
 	return (
 		<div className='flex h-full'>
 			{Object.values(items).map((item, index) => (
 				<AccordionItem
-					isOpen={openCategory === index}
+					isOpen={categoryOpen === index}
 					key={index}
 					index={index}
 					label={item.props.category.name}
 					content={item}
 					onClick={() => {
-						setOpenCategory(index);
+						setCategoryOpen(index);
 						clickSound();
 					}}
 				/>

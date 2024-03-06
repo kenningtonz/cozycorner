@@ -46,7 +46,7 @@ code {
 }
 
 .green {
-	@apply bg-green-300/50 hover:bg-green-300;
+	@apply bg-lime-300/50 hover:bg-lime-300;
 }
 
 /* 
@@ -84,6 +84,59 @@ code {
 
 .rainbowInner {
 	@apply rounded-lg h-full w-full bg-white/80;
+}
+
+/* created with https://www.gradient-animator.com/ */
+.rainbowAnimated {
+	background: linear-gradient(
+		270deg,
+		rgba(250, 171, 153, 1),
+		rgba(252, 188, 93, 1),
+		rgba(255, 220, 94, 1),
+		rgba(197, 236, 172, 1),
+		rgba(174, 247, 255, 1),
+		rgba(212, 187, 252, 1),
+		rgba(250, 171, 153, 1)
+	);
+	background-size: 1200% 1200%;
+
+	-webkit-animation: rainbowAnimation 30s ease infinite;
+	-moz-animation: rainbowAnimation 30s ease infinite;
+	animation: rainbowAnimation 30s ease infinite;
+}
+
+@-webkit-keyframes rainbowAnimation {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+@-moz-keyframes rainbowAnimation {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+@keyframes rainbowAnimation {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
 }
 
 /* .rainbowAnimate{

@@ -81,6 +81,11 @@ const creditData = {
 						artist: "VNB-Leo",
 						link: "https://vnbp.itch.io/",
 					},
+					{
+						name: "Monitor, Rubber Duck, Trash Bin, Wall Corkboard, Globe",
+						artist: "CreativeTrio",
+						link: "https://poly.pizza/u/CreativeTrio",
+					},
 				],
 			},
 			environment: {
