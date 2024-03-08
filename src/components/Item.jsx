@@ -4,7 +4,7 @@ import { ColorMaterial } from "@/hooks/colourMaterial";
 import { useGLTF, Clone, Outlines, useHelper } from "@react-three/drei";
 import * as THREE from "three";
 
-export const Item = ({ item, onClick, map, onHover, isHovered, gameState }) => {
+export const Item = ({ item, onClick, map, onHover, offHover, gameState }) => {
 	const { name, isSelected, isOnTable } = item;
 	const { gridToVector3, vector3ToGrid } = useGrid(map);
 
@@ -46,15 +46,8 @@ export const Item = ({ item, onClick, map, onHover, isHovered, gameState }) => {
 		<>
 			<group
 				position={gridToVector3(position, size)}
-				onPointerOver={
-					gameState === "inside"
-						? (e) => {
-								onHover(true);
-								console.log(e);
-						  }
-						: null
-				}
-				onPointerOut={isHovered ? () => onHover(false) : null}
+				onPointerOver={onHover}
+				onPointerOut={offHover}
 				onPointerDown={(e) => {
 					// console.log(e);
 					onClick();

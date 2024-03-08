@@ -155,7 +155,7 @@ const Credits = () => {
 							{Object.values(category.items).map((subCat) => (
 								<li key={`${subCat.name}-key`} className='mb-2'>
 									<h3 className='text-lg font-medium'>{subCat.name}</h3>
-									<ul className=''>
+									<ul>
 										{subCat.items.map((item) => (
 											<CreditItem name={item.name} artist={item.artist} link={item.link} />
 										))}

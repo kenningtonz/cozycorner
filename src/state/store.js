@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { environments } from "@data/environments";
 import { unstable_batchedUpdates } from "react-dom";
-import { Item } from "@data/models";
+import { Item, Table } from "@data/models";
 
 export const saveUserData = () => {
 	const userData = {};
@@ -23,9 +23,15 @@ const loadUserData = () => {
 	if (userData !== null) {
 		const items = [];
 		userData.items.map((item) => {
-			items.push(Item.fromJSON(item));
+			if (item.category.name == "Tables") {
+				items.push(Table.tableFromJSON(item));
+				console.log("table");
+			} else {
+				console.log("item");
+				items.push(Item.fromJSON(item));
+			}
 		});
-
+		console.log(items);
 		useGameStore.setState(() => ({
 			environment: userData.environment,
 			floorColor: userData.floorColor,

@@ -55,6 +55,9 @@ const isColliding = (selectedId) => {
 
 			if (yAxisCheck() && xAxisCheck() && zAxisCheck()) {
 				colliding = true;
+				if (item.isDecor() && otherItem.isTable() && !item.isOnTable) {
+					putOnTable(otherItem);
+				}
 			}
 		} else if (
 			item.tempAxis.x &&
@@ -65,7 +68,9 @@ const isColliding = (selectedId) => {
 			//check x and y
 			if (yAxisCheck() && xAxisCheck()) {
 				colliding = true;
-				// console.log("x and y axis", "colliding: ", colliding);
+				if (item.isDecor() && otherItem.isTable() && !item.isOnTable) {
+					putOnTable(otherItem);
+				}
 			}
 		} else if (
 			item.tempAxis.z &&
@@ -75,7 +80,9 @@ const isColliding = (selectedId) => {
 		) {
 			if (yAxisCheck() && zAxisCheck()) {
 				colliding = true;
-				// console.log("y and z", "colliding: ", colliding);
+				if (item.isDecor() && otherItem.isTable() && !item.isOnTable) {
+					putOnTable(otherItem);
+				}
 			}
 			//check z and y
 		} else if (
@@ -87,13 +94,13 @@ const isColliding = (selectedId) => {
 			//check x and z
 			if (zAxisCheck() && xAxisCheck()) {
 				colliding = true;
-				// console.log("x and z", "colliding: ", colliding);
+
+				if (item.isDecor() && otherItem.isTable() && !item.isOnTable) {
+					putOnTable(otherItem);
+				}
 			}
 		}
-
-		if (item.isDecor() && otherItem.isTable() && colliding && !item.isOnTable) {
-			putOnTable(otherItem);
-		}
+		// console.log(otherItem, colliding);
 
 		if (!colliding && item.isOnTable) {
 			removeFromTable(item);
@@ -129,7 +136,7 @@ const removeFromTable = (itemSelected) => {
 };
 
 const putOnTable = (table) => {
-	console.log("put on table");
+	console.log("put on table", table);
 	useGameStore.setState((state) => ({
 		items: state.items.map((item) => {
 			if (item.id === state.selectedId) {
@@ -142,7 +149,7 @@ const putOnTable = (table) => {
 				};
 			}
 			if (item === table) {
-				item.items.push(state.selectedId);
+				item.addItem(state.selectedId);
 				// console.log(item);
 			}
 			return item;
@@ -210,12 +217,12 @@ export const rotateSelected = (rotationChange, item) => {
 			newRot = 1;
 			newAxis.x = false;
 			newAxis.z = true;
-			newPos = { x: -0.25, y: newPos.y, z: -newPos.x };
+			newPos = { x: 0, y: newPos.y, z: -newPos.x };
 		} else {
 			newRot = 2;
 			newAxis.z = false;
 			newAxis.x = true;
-			newPos = { x: -newPos.z, y: newPos.y, z: 0.25 };
+			newPos = { x: -newPos.z, y: newPos.y, z: 0 };
 		}
 	}
 	// console.log(newRot);

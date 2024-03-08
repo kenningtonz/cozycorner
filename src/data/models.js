@@ -60,7 +60,6 @@ export class Item extends Model {
 		this.tempRot = this.rotation;
 		this.tempCol = this.colors;
 		this.tempAxis = this.axis;
-		console.log(this.tempCol);
 		this.tempCanDrop = false;
 	}
 
@@ -122,6 +121,28 @@ export class Table extends Item {
 	removeItem(itemID) {
 		this.items = this.items.filter((i) => i !== itemID);
 	}
+
+	static tableFromJSON(data) {
+		const table = new Table(models.getModelByName(data.name), data.id);
+		table.position = data.position;
+		table.rotation = data.rotation;
+		table.colors = data.colors;
+		table.axis = new MovableAxis(data.axis.x, data.axis.y, data.axis.z);
+		table.isSelected = data.isSelected;
+		table.isOnTable = data.isOnTable;
+		table.tableId = data.tableId;
+		table.tempPos = data.tempPos;
+		table.tempRot = data.tempRot;
+		table.tempCol = data.tempCol;
+		table.tempAxis = new MovableAxis(
+			data.tempAxis.x,
+			data.tempAxis.y,
+			data.tempAxis.z
+		);
+		table.tempCanDrop = data.tempCanDrop;
+		table.items = data.items ?? [];
+		return table;
+	}
 }
 
 const Models = {
@@ -167,7 +188,7 @@ const Models = {
 	),
 	chairD: new Model(
 		"chairD",
-		{ x: 1, z: 1, y: 1 },
+		{ x: 1, z: 0.75, y: 1 },
 		Categories.chairs,
 		new MovableAxis(true, false, true),
 		["#CBB792", "#E2EDF6"],
@@ -336,7 +357,7 @@ const Models = {
 	),
 	tableLow: new Model(
 		"tableLow",
-		{ x: 2, z: 1, y: 0.5 },
+		{ x: 2, z: 1.5, y: 0.5 },
 		Categories.tables,
 		new MovableAxis(true, false, true),
 		["#A16C52"],
@@ -380,6 +401,14 @@ const Models = {
 		Categories.tables,
 		new MovableAxis(true, false, true),
 		["#A16C52"],
+		true
+	),
+	tableBedside: new Model(
+		"tableBedside",
+		{ x: 1, z: 1, y: 0.75 },
+		Categories.tables,
+		new MovableAxis(true, false, true),
+		["#CBB792", "#E2EDF6"],
 		true
 	),
 	tableSmallB: new Model(
@@ -440,7 +469,7 @@ const Models = {
 	),
 	deskA: new Model(
 		"deskA",
-		{ x: 2, z: 1, y: 1 },
+		{ x: 3, z: 0.75, y: 1 },
 		Categories.tables,
 		new MovableAxis(true, false, true),
 		["#CBB792", "#E2EDF6"],
@@ -448,7 +477,7 @@ const Models = {
 	),
 	deskB: new Model(
 		"deskB",
-		{ x: 3, z: 1, y: 1 },
+		{ x: 2, z: 0.75, y: 1 },
 		Categories.tables,
 		new MovableAxis(true, false, true),
 		["#CBB792", "#E2EDF6"],

@@ -49,10 +49,19 @@ const House = () => {
 					item={item}
 					map={map}
 					gameState={gameState}
-					isHovered={isHovered}
-					onHover={setIsHovered}
+					onHover={
+						gameState === "inside" && (selectedId === null || selectedId === item.id)
+							? (e) => setIsHovered(true)
+							: null
+					}
+					offHover={isHovered ? () => setIsHovered(false) : null}
 					onClick={() => {
-						if (selectedId !== item.id && gameState === "inside") {
+						console.log(selectedId);
+						if (
+							selectedId !== item.id &&
+							gameState === "inside" &&
+							selectedId === null
+						) {
 							setSelected(item.id);
 							selectSound();
 							console.log(item);
