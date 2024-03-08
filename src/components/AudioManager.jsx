@@ -5,7 +5,7 @@ import { setAudioRef } from "../state/audioStoreFunctions";
 import useSound from "use-sound";
 
 export const MusicManager = () => {
-	// const setAudioRef = useGameStore((state) => state.setAudioRef);
+	const muted = useGameStore((state) => state.muted);
 	useEffect(() => {
 		const audio = document.getElementById("musicTag");
 
@@ -16,7 +16,7 @@ export const MusicManager = () => {
 	const trackPath = Object.values(MusicTracks)[track].path;
 
 	if (playing) {
-		console.log("playing");
+		// console.log("playing");
 	}
 	return (
 		<div>
@@ -25,6 +25,7 @@ export const MusicManager = () => {
 				src={trackPath}
 				autoPlay={playing}
 				loop
+				muted={muted}
 				volume={volume}
 			/>
 		</div>

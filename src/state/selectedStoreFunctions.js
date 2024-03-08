@@ -8,7 +8,7 @@ const isColliding = (selectedId) => {
 		items = useGameStore.getState().items;
 	});
 	const item = items.find((item) => item.id === selectedId);
-	console.log(item);
+	// console.log(item);
 	if (item.collidable === false) return false;
 	let colliding = false;
 
@@ -119,7 +119,7 @@ const isColliding = (selectedId) => {
 };
 
 const removeFromTable = (itemSelected) => {
-	console.log("remove from table");
+	// console.log("remove from table");
 	useGameStore.setState((state) => ({
 		items: state.items.map((item) => {
 			if (item.id === itemSelected.tableId) {
@@ -136,7 +136,7 @@ const removeFromTable = (itemSelected) => {
 };
 
 const putOnTable = (table) => {
-	console.log("put on table", table);
+	// console.log("put on table", table);
 	useGameStore.setState((state) => ({
 		items: state.items.map((item) => {
 			if (item.id === state.selectedId) {
@@ -203,7 +203,7 @@ export const rotateSelected = (rotationChange, item) => {
 	let newPos = item.tempPos;
 	let newAxis = item.tempAxis;
 
-	console.log(newRot);
+	// console.log(newRot);
 	if (newAxis.onFloor()) {
 		newRot = newRot + rotationChange;
 		if (newRot < 0) {
@@ -373,7 +373,7 @@ export const placeSelected = (item) => {
 };
 
 export const spawnItem = (itemName) => {
-	console.log(itemName);
+	// console.log(itemName);
 
 	const categories = models.getCategories();
 	const model = models.getModelByName(itemName);

@@ -86,7 +86,9 @@ const SelectedUI = ({ selectedId, muted }) => {
 	function handleMove(e) {
 		const x = e.x;
 		const y = e.y;
-		moveSound();
+		if (x > 0.25 || x < -0.25 || y > 0.25 || y < -0.25) {
+			moveSound();
+		}
 		moveSelected(-Math.round(x * 2), Math.round(y * 2), item);
 	}
 	return (

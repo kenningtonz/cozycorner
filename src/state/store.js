@@ -25,13 +25,13 @@ const loadUserData = () => {
 		userData.items.map((item) => {
 			if (item.category.name == "Tables") {
 				items.push(Table.tableFromJSON(item));
-				console.log("table");
+				// console.log("table");
 			} else {
-				console.log("item");
+				// console.log("item");
 				items.push(Item.fromJSON(item));
 			}
 		});
-		console.log(items);
+		// console.log(items);
 		useGameStore.setState(() => ({
 			environment: userData.environment,
 			floorColor: userData.floorColor,
@@ -53,7 +53,7 @@ const loadUserData = () => {
 };
 
 const newCorner = () => {
-	console.log("new corner");
+	// console.log("new corner");
 	useGameStore.setState(() => ({
 		environment: environments[0],
 		floorColor: "#cdaa7d",
@@ -105,7 +105,7 @@ export const createScreenshot = () => {
 	});
 	const link = document.createElement("a");
 	link.setAttribute("download", "screenshot.png");
-	console.log(canvas);
+	// console.log(canvas);
 	link.setAttribute(
 		"href",
 		canvas.toDataURL("image/png").replace("image/png", "image/octet-stream")
@@ -114,7 +114,7 @@ export const createScreenshot = () => {
 };
 
 export const startGame = (fromLocal) => {
-	console.log("start game");
+	// console.log("start game");
 	if (fromLocal) {
 		loadUserData();
 	} else {

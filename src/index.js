@@ -45,7 +45,7 @@ function Loader() {
 
 function App() {
 	const page = useGameStore((state) => state.page);
-	console.log("app rerender", page);
+	// console.log("app rerender", page);
 
 	return (
 		<>
