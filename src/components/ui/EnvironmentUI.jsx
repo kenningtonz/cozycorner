@@ -45,6 +45,7 @@ const EnvironmentUI = ({ selectSound }) => {
 						onClick={() => {
 							setIsDay(!isDay);
 						}}
+						aria-label='day/night'
 						whileHover={{ scale: 1.03 }}
 						whileTap={{ scale: 0.95 }}
 					>

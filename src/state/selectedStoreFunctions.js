@@ -240,10 +240,7 @@ export const rotateSelected = (rotationChange, item) => {
 			useGameStore.setState((state) => ({
 				items: state.items.map((subItem) => {
 					if (subItem.id === itemOnTableId) {
-						subItem.tempPos = subItem.tempPos - item.tempPos;
 						subItem.tempRot = newRot;
-
-						subItem.tempPos = subItem.tempPos + item.tempPos;
 					}
 					return subItem;
 				}),

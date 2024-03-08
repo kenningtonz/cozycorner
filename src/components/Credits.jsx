@@ -82,6 +82,11 @@ const creditData = {
 						link: "https://vnbp.itch.io/",
 					},
 					{
+						name: "Furniture Asset Pack",
+						artist: "Aline",
+						link: "https://ladoncha.itch.io/",
+					},
+					{
 						name: "Monitor, Rubber Duck, Trash Bin, Wall Corkboard, Globe",
 						artist: "CreativeTrio",
 						link: "https://poly.pizza/u/CreativeTrio",

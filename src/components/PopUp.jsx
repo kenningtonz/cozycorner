@@ -20,7 +20,7 @@ const PopUp = ({ children, isOpen, setIsOpen }) => {
 				>
 					<section
 						ref={popup}
-						className='scroll-py-4 rainbowBorder pointer-events-auto w-auto max-w-[600px] overflow-auto  scrollbar max-h-dvh'
+						className='scroll-py-4 rainbowBorder pointer-events-auto w-auto max-w-[600px] overflow-auto  scrollbar max-h-[90dvh] '
 					>
 						<div className='rainbowInner p-4 flex flex-col items-center'>
 							<motion.button
@@ -29,7 +29,7 @@ const PopUp = ({ children, isOpen, setIsOpen }) => {
 								onClick={() => {
 									setIsOpen(false);
 								}}
-								className='absolute top-0 right-0 m-4'
+								className='self-end '
 							>
 								<FontAwesomeIcon size='2x' icon={faXmark} />
 							</motion.button>

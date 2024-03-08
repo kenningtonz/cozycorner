@@ -8,7 +8,7 @@ import {
 	faDeleteLeft,
 	faVolumeXmark,
 	faVolumeHigh,
-	faEye,
+	faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import useSound from "use-sound";
 import EnvironmentUI from "@ui/EnvironmentUI";
@@ -49,21 +49,22 @@ export const UI = () => {
 					popUp ? `pointer-events-non` : `pointer-events-auto`
 				} self-start justify-self-start w-full`}
 			>
-				<div className=' flex w-full justify-between '>
+				<div className=' flex w-full justify-between flex-wrap sm:flex-nowrap gap-y-4 '>
 					<motion.button
 						onClick={() => {
 							setPopUp(true);
 							questionSound();
 						}}
+						aria-label='back'
 						// whileHover={{ scale: 1.05 }}
 						whileTap={{ scale: 0.95 }}
-						className={`iconBtn red relative`}
+						className={`iconBtn red sm:order-1 order-2`}
 					>
 						<FontAwesomeIcon size='xl' icon={faDeleteLeft} />
 					</motion.button>
 
-					<div className='rainbowBorder '>
-						<div className='flex  rainbowInner p-1 gap-2'>
+					<div className='rainbowBorder sm:order-2 order-1 sm:w-auto w-full'>
+						<div className='flex  rainbowInner p-1 gap-2 justify-self-center'>
 							<button
 								onClick={() => {
 									clickSound();
@@ -106,12 +107,12 @@ export const UI = () => {
 								className='uiBtn'
 								data-active={gameState == "view"}
 							>
-								<FontAwesomeIcon size='2xl' icon={faEye} />
-								<p className='text-sm'>View</p>
+								<FontAwesomeIcon size='2xl' icon={faCheck} />
+								<p className='text-sm'>Done</p>
 							</button>
 						</div>
 					</div>
-					<motion.button
+					{/* <motion.button
 						onClick={() => {
 							confirmationSound();
 							saveUserData();
@@ -121,21 +122,24 @@ export const UI = () => {
 						className={`iconBtn green relative`}
 					>
 						<FontAwesomeIcon size='xl' icon={faFloppyDisk} />
+					</motion.button> */}
+
+					<motion.button
+						onClick={() => {
+							setMuted(!soundMuted);
+							clickSound();
+						}}
+						aria-label='mute'
+						whileTap={{ scale: 0.95 }}
+						whileHover={{ scale: 1.05 }}
+						className={`iconBtn sm:order-3 order-2`}
+					>
+						<FontAwesomeIcon
+							size='xl'
+							icon={soundMuted ? faVolumeXmark : faVolumeHigh}
+						/>
 					</motion.button>
 				</div>
-				<motion.button
-					onClick={() => {
-						setMuted(!soundMuted);
-						clickSound();
-					}}
-					whileTap={{ scale: 0.95 }}
-					className={`iconBtn relative cursor-pointer pointer-events-auto`}
-				>
-					<FontAwesomeIcon
-						size='xl'
-						icon={soundMuted ? faVolumeXmark : faVolumeHigh}
-					/>
-				</motion.button>
 			</section>
 			<PopUp isOpen={popUp} setIsOpen={setPopUp}>
 				<>

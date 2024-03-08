@@ -56,7 +56,8 @@ export const Item = ({ item, onClick, map, onHover, isHovered, gameState }) => {
 				}
 				onPointerOut={isHovered ? () => onHover(false) : null}
 				onPointerDown={(e) => {
-					console.log(e);
+					// console.log(e);
+					onClick();
 				}}
 			>
 				<Clone

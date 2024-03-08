@@ -52,7 +52,7 @@ const ItemListItem = ({ item, spawnSound }) => {
 
 const ItemList = ({ items, category, spawnSound }) => {
 	return (
-		<ul className='flex flex-wrap gap-2 '>
+		<ul className='flex flex-wrap gap-2'>
 			{Object.values(items).map((item, index) =>
 				item.category.name === category.name ? (
 					<li key={`${item.name}-${index}`} className='w-12 h-12'>

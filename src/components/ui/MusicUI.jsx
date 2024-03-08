@@ -58,12 +58,15 @@ const MusicUI = ({ selectSound }) => {
 							handleClick(-1);
 							selectSound();
 						}}
+						whileHover={{ scale: 1.05 }}
+						aria-label='last track'
 					>
 						<FontAwesomeIcon icon={faBackwardStep} size={"xl"} />
 					</motion.button>
 					<motion.button
 						whileHover={{ scale: 1.05 }}
 						whileTap={{ scale: 0.9 }}
+						aria-label='play/pause'
 						onClick={() => setAudioPlaying(playing ? false : true)}
 						className='btn w-14 h-14  data-[playing=true]:bg-red-300/80 hover:data-[playing=true]:bg-red-300  data-[playing=false]:bg-green-300/80 hover:data-[playing=false]:bg-green-300 '
 						data-playing={`${playing}`}
@@ -79,8 +82,9 @@ const MusicUI = ({ selectSound }) => {
 							handleClick(-1);
 							selectSound();
 						}}
+						aria-label='next track'
 						className='transition-colors'
-						whileHover={{ color: "red" }}
+						whileHover={{ scale: 1.05 }}
 					>
 						<FontAwesomeIcon icon={faForwardStep} size={"xl"} />
 					</motion.button>
@@ -93,6 +97,7 @@ const MusicUI = ({ selectSound }) => {
 						id='volume-range'
 						type='range'
 						min={0}
+						aria-label='volume'
 						max={100}
 						onChange={(e) => setAudioVolume(e.target.value / 100)}
 						value={volume * 100}

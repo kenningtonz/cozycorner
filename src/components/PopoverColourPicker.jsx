@@ -26,7 +26,7 @@ export const PopoverPicker = ({ color, onChange, icon }) => {
 
 			{isOpen && (
 				<div
-					className='absolute left-[-80px] rounded-lg top-[-210px] border-4 border-white bg-white shadow-md '
+					className='absolute right-[50px] rounded-lg bottom-0  border-4 border-white bg-white shadow-md '
 					ref={popover}
 				>
 					<HexColorPicker color={color} onChange={onChange} />

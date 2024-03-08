@@ -18,8 +18,8 @@ export const Home = () => {
 
 	return (
 		<main className='flex flex-col items-center justify-center h-screen gap-4 rainbowAnimated '>
-			<h1 className=' text-center text-6xl'>Comfort Corner</h1>
-
+			<img src='/logo.png' alt='comfort corner logo' width={200} height={200} />
+			<h1 className=' text-center text-6xl mb-4'>Comfort Corner</h1>
 			<motion.button
 				whileHover={{ scale: 1.03 }}
 				whileTap={{ scale: 0.95 }}

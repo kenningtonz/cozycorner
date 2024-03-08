@@ -78,8 +78,13 @@ const EnvironmentOutside = () => {
 				height={8}
 				color='white'
 			/>
-			<Clouds position={[4, -12, -4]} material={THREE.MeshBasicMaterial}>
+			<Clouds
+				frustumCulled={false}
+				position={[4, -12, -4]}
+				material={THREE.MeshBasicMaterial}
+			>
 				<Cloud
+					frustumCulled={false}
 					concentrate='outside'
 					segments={20}
 					bounds={[20, 1, 20]}
@@ -89,6 +94,7 @@ const EnvironmentOutside = () => {
 					color={env.cloudColor}
 				/>
 				<Cloud
+					frustumCulled={false}
 					concentrate='outside'
 					bounds={[20, 2, 20]}
 					segments={20}

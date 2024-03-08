@@ -18,6 +18,7 @@ const ViewUI = ({ sound }) => {
 						sound();
 						createScreenshot();
 					}}
+					aria-label='screenshot'
 					// whileHover={{ scale: 1.05 }}
 					whileTap={{ scale: 0.95 }}
 					className={`iconBtn green relative`}
@@ -29,6 +30,7 @@ const ViewUI = ({ sound }) => {
 						sound();
 						saveUserData();
 					}}
+					aria-label='save'
 					// whileHover={{ scale: 1.05 }}
 					whileTap={{ scale: 0.95 }}
 					className={`iconBtn green relative`}

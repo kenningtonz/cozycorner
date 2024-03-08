@@ -14,6 +14,7 @@ import {
 	faRotateLeft,
 	faTrashCan,
 	faPalette,
+	faArrowsDownToLine,
 } from "@fortawesome/free-solid-svg-icons";
 import useSound from "use-sound";
 import { PopoverPicker } from "@components/PopoverColourPicker.jsx";
@@ -97,6 +98,7 @@ const SelectedUI = ({ selectedId, muted }) => {
 							rotateSelected(-1, item);
 							rotateSound();
 						}}
+						aria-label='rotate left'
 						className=' col-span-1 w-12 h-12 btn bg-black/5 hover:bg-white/40 '
 					>
 						<FontAwesomeIcon icon={faRotateLeft} />
@@ -106,6 +108,7 @@ const SelectedUI = ({ selectedId, muted }) => {
 							rotateSelected(1, item);
 							rotateSound();
 						}}
+						aria-label='rotate right'
 						className=' col-span-1  w-12 h-12 btn bg-black/5 hover:bg-white/40'
 					>
 						<FontAwesomeIcon icon={faRotateRight} />
@@ -121,7 +124,7 @@ const SelectedUI = ({ selectedId, muted }) => {
 					></Joystick>
 				</div>
 
-				<div className='grid gap-2 '>
+				<div className=''>
 					<button
 						onClick={() => {
 							{
@@ -129,9 +132,10 @@ const SelectedUI = ({ selectedId, muted }) => {
 								item.tempCanDrop ? placeSound() : errorSound();
 							}
 						}}
-						className='btn row-span-2 col-span-2 green'
+						aria-label='place item'
+						className='btn w-12 h-24  green  mb-2'
 					>
-						Place
+						<FontAwesomeIcon icon={faArrowsDownToLine} />
 					</button>
 
 					<button
@@ -139,13 +143,17 @@ const SelectedUI = ({ selectedId, muted }) => {
 							removeSelected(item);
 							trashSound();
 						}}
-						className=' iconBtn red '
+						aria-label='delete item'
+						className=' iconBtn red row-span-1 '
 					>
 						<FontAwesomeIcon icon={faTrashCan} />
 					</button>
+				</div>
+				{item.tempCol.length > 0 ? (
+					<>
+						<div className='line'></div>
 
-					{item.tempCol.length > 0 ? (
-						<ul>
+						<ul className='flex flex-col justify-between'>
 							{item.tempCol.map((col, index) => {
 								return (
 									<li key={`${index}-color`}>
@@ -158,8 +166,8 @@ const SelectedUI = ({ selectedId, muted }) => {
 								);
 							})}
 						</ul>
-					) : null}
-				</div>
+					</>
+				) : null}
 			</div>
 		</section>
 	);

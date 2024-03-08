@@ -29,25 +29,27 @@ const InsideUI = ({ muted }) => {
 			exit={{ y: 100, opacity: 0 }}
 			className='rainbowBorder pointer-events-auto '
 		>
-			<div className='flex rainbowInner gap-4 items-stretch p-4 '>
+			<div className='flex rainbowInner gap-4 items-stretch p-2   '>
 				{selectedId != null ? (
 					<SelectedUI selectedId={selectedId} muted={muted} />
 				) : (
-					<ItemsUI muted={muted} />
+					<>
+						<ItemsUI muted={muted} />
+						<div className='line'></div>
+						<div className='flex flex-col justify-between'>
+							<PopoverPicker
+								icon={faPaintRoller}
+								onChange={setBuildingColor}
+								color={buildingColor}
+							/>
+							<PopoverPicker
+								icon={faHouse}
+								onChange={setFloorColor}
+								color={floorColor}
+							/>
+						</div>
+					</>
 				)}
-				<div className='line'></div>
-				<div className='flex flex-col justify-between'>
-					<PopoverPicker
-						icon={faPaintRoller}
-						onChange={setBuildingColor}
-						color={buildingColor}
-					/>
-					<PopoverPicker
-						icon={faHouse}
-						onChange={setFloorColor}
-						color={floorColor}
-					/>
-				</div>
 			</div>
 		</motion.section>
 	);
