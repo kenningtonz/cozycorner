@@ -1,47 +1,37 @@
 import { useGrid } from "../hooks/useGrid";
-import { Children, useRef } from "react";
+import { useRef } from "react";
 import { ColorMaterial } from "@/hooks/colourMaterial";
-import { useGLTF, Clone, Outlines, useHelper } from "@react-three/drei";
-import * as THREE from "three";
+import { useGLTF, Clone } from "@react-three/drei";
 
-export const Item = ({ item, onClick, map, onHover, offHover, gameState }) => {
+export const Item = ({ item, onClick, map, onHover, offHover }) => {
 	const { name, isSelected, isOnTable } = item;
-	const { gridToVector3, vector3ToGrid } = useGrid(map);
+	const { gridToVector3 } = useGrid(map);
 
-	// console.log(item);
-
+	//setting current values
 	const colors = isSelected ? item.tempCol : item.colors;
 	const position = isSelected || isOnTable ? item.tempPos : item.position;
 	const rotation = isSelected || isOnTable ? item.tempRot : item.rotation;
 	const axis = isSelected ? item.tempAxis : item.axis;
-	// const canDrop = isSelected ? item.canDrop : false;
 
 	const { scene } = useGLTF(`/models/${name}.glb`);
-	// const { nodes, materials } = useGraph(scene)
 	const size = item.getSize(rotation);
-	// console.log(size);
-	const box = useRef();
-	// useHelper(box, THREE.BoxHelper, "cyan");
-	//setting colors
 
 	if (colors !== undefined) {
 		ColorMaterial(scene, colors, name);
 	}
 
 	scene.traverse((child) => {
-		// console.log(child);
 		if (child.isMesh) {
 			child.castShadow = true;
 			child.receiveShadow = true;
 		}
 	});
 
-	// if(item.isOnTable && )
+	//green box for placement
 	const hoverY = isSelected && axis.onFloor() ? 0.1 : 0;
 	const hoverZ = isSelected && axis.x && axis.y ? -0.1 : 0;
 	const hoverX = isSelected && axis.z && axis.y ? 0.1 : 0;
 
-	// console.log(hoverX, hoverY, hoverZ);
 	return (
 		<>
 			<group
@@ -49,18 +39,14 @@ export const Item = ({ item, onClick, map, onHover, offHover, gameState }) => {
 				onPointerOver={onHover}
 				onPointerOut={offHover}
 				onPointerDown={(e) => {
-					// console.log(e);
 					onClick();
 				}}
 			>
 				<Clone
-					ref={box}
-					// onUpdate={(self) => console.log(self)}
 					rotation-y={((rotation || 0) * Math.PI) / 2}
 					object={scene}
 					position={[hoverX, hoverY, hoverZ]}
 				/>
-				{/* <Outlines thickness={0.05} colors='hotpink' /> */}
 				{isSelected && (
 					<mesh position={[0, axis.onFloor() ? 0 : size.y / 2, 0]}>
 						<boxGeometry

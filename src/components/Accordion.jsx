@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useGameStore } from "@state/store";
 const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
 

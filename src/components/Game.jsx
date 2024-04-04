@@ -19,7 +19,6 @@ export const Game = () => {
 				maxPolarAngle={Math.PI / 2.5}
 				minAzimuthAngle={Math.PI / 2}
 				maxAzimuthAngle={Math.PI}
-				// enableRotate={false}
 				enablePan={false}
 				screenSpacePanning={false}
 			/>

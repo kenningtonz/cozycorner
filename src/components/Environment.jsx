@@ -20,7 +20,6 @@ const TerrainPlane = ({ color }) => {
 			child.material.color.set(color);
 		}
 	});
-	// console.log("terrain rerender");
 	return <primitive object={scene} position={[0, -0.4, 0]} />;
 };
 
@@ -33,13 +32,11 @@ const TerrainPlane = ({ color }) => {
 const EnvironmentOutside = () => {
 	const env = useGameStore((state) => state.environment);
 	const isDay = useGameStore((state) => state.isDay);
-	// console.log("envi rerender");
 
 	const { scene } = useGLTF(`/models/environment/${env.name}.glb`);
 
 	return (
 		<>
-			{/* <Environment background={false} preset='forest' /> */}
 			<GradientTexture
 				attach='background'
 				stops={[0, 1]} // As many stops as you want
@@ -52,7 +49,6 @@ const EnvironmentOutside = () => {
 				groundColor={env.groundLight}
 			/>
 			<rectAreaLight
-				// ref={light}
 				position={[5, 12, -5]}
 				rotation-x={-Math.PI / 2}
 				intensity={0.5}
@@ -61,7 +57,6 @@ const EnvironmentOutside = () => {
 				color='white'
 			/>
 			<rectAreaLight
-				// ref={light}
 				position={[12, 5, -5]}
 				rotation-y={Math.PI / 2}
 				intensity={0.5}
@@ -70,7 +65,6 @@ const EnvironmentOutside = () => {
 				color='white'
 			/>
 			<rectAreaLight
-				// ref={light}
 				position={[5, 5, -12]}
 				rotation-y={-Math.PI}
 				intensity={0.5}

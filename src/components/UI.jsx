@@ -1,8 +1,7 @@
-import { useGameStore, saveUserData } from "@gameStore";
+import { useGameStore } from "@gameStore";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
 	faMusic,
-	faFloppyDisk,
 	faHouse,
 	faEarthAmericas,
 	faDeleteLeft,
@@ -14,7 +13,7 @@ import useSound from "use-sound";
 import EnvironmentUI from "@ui/EnvironmentUI";
 import InsideUI from "@ui/InsideUI";
 import MusicUI from "@ui/MusicUI";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useState } from "react";
 import PopUp from "./PopUp";
 
@@ -40,8 +39,6 @@ export const UI = () => {
 	});
 	const [popUp, setPopUp] = useState(false);
 
-	//floors
-	console.log("ui rereender");
 	return (
 		<main className='absolute top-0 inset-4 flex flex-col pointer-events-none justify-between items-center overflow-hidden'>
 			<section
@@ -56,7 +53,6 @@ export const UI = () => {
 							questionSound();
 						}}
 						aria-label='back'
-						// whileHover={{ scale: 1.05 }}
 						whileTap={{ scale: 0.95 }}
 						className={`iconBtn red sm:order-1 order-2`}
 					>
@@ -74,7 +70,6 @@ export const UI = () => {
 								data-active={gameState == "music"}
 							>
 								<FontAwesomeIcon size='2xl' icon={faMusic} />
-								{/* <Icon name={"Music"} size={32} /> */}
 								<p className='text-sm'>Music</p>
 							</button>
 							<button
@@ -112,17 +107,6 @@ export const UI = () => {
 							</button>
 						</div>
 					</div>
-					{/* <motion.button
-						onClick={() => {
-							confirmationSound();
-							saveUserData();
-						}}
-						// whileHover={{ scale: 1.05 }}
-						whileTap={{ scale: 0.95 }}
-						className={`iconBtn green relative`}
-					>
-						<FontAwesomeIcon size='xl' icon={faFloppyDisk} />
-					</motion.button> */}
 
 					<motion.button
 						onClick={() => {
@@ -175,14 +159,12 @@ export const UI = () => {
 					popUp ? `pointer-events-none` : ``
 				} `}
 			>
-				{/* <AnimatePresence> */}
 				{gameState === "inside" ? <InsideUI muted={soundMuted} /> : null}
 				{gameState === "music" ? <MusicUI selectSound={selectSound} /> : null}
 				{gameState === "outside" ? (
 					<EnvironmentUI selectSound={selectSound} />
 				) : null}
 				{gameState === "view" ? <ViewUI sound={confirmationSound} /> : null}
-				{/* </AnimatePresence> */}
 			</section>
 		</main>
 	);

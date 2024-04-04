@@ -20,10 +20,6 @@ export const ColorMaterialAccent = (scene, color, name) => {
 };
 
 export const ColorMaterial = (scene, colors, name) => {
-	// const colorTiny = tinycolor(color);
-
-	// const colorAccent = getAccentColor(colorTiny);
-
 	const letters = ["A", "B", "C"];
 
 	colors.forEach((color, index) => {

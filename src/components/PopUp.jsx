@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
@@ -10,7 +10,6 @@ const PopUp = ({ children, isOpen, setIsOpen }) => {
 			{isOpen && (
 				<div
 					onClick={(e) => {
-						// console.log(e.target);
 						if (popup.current.contains(e.target)) {
 							return;
 						}
