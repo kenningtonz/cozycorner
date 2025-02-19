@@ -32,24 +32,6 @@ export const ColorMaterial = (scene, colors, name) => {
 			}
 		});
 	});
-
-	// scene.traverse((child) => {
-	// 	if (child.name === `${name}_colourA`) {
-	// 		const clonedMaterialColor = child.material.clone();
-	// 		clonedMaterialColor.color.set(new THREE.Color(color));
-	// 		child.material = clonedMaterialColor;
-	// 	}
-	// 	if (child.name === `${name}_colourB`) {
-	// 		const clonedMaterialColorAccent = child.material.clone();
-	// 		clonedMaterialColorAccent.color.set(new THREE.Color(colorAccent));
-	// 		child.material = clonedMaterialColorAccent;
-	// 	}
-	// 	if (child.name === `${name}_colourC`) {
-	// 		const clonedMaterialBase = child.material.clone();
-	// 		clonedMaterialBase.color.set(new THREE.Color(baseColor));
-	// 		child.material = clonedMaterialBase;
-	// 	}
-	// });
 };
 
 function getAccentColor(color) {

@@ -6,6 +6,7 @@ import { Canvas } from "@react-three/fiber";
 import { UI } from "./components/UI";
 import { MusicManager } from "./components/AudioManager";
 import "./output.css";
+import { useEffect } from "react";
 
 import { models } from "./data/models";
 
@@ -36,6 +37,18 @@ function Loader() {
 }
 
 function App() {
+	useEffect(() => {
+		var _mtm = (window._mtm = window._mtm || []);
+		_mtm.push({ "mtm.startTime": new Date().getTime(), event: "mtm.Start" });
+		(function () {
+			var d = document,
+				g = d.createElement("script"),
+				s = d.getElementsByTagName("script")[0];
+			g.async = true;
+			g.src = "https://analytics.kennedyadams.ca/js/container_k09ltkud.js";
+			s.parentNode.insertBefore(g, s);
+		})();
+	}, []);
 	const page = useGameStore((state) => state.page);
 	return (
 		<>
